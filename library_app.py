@@ -1,7 +1,28 @@
 import sqlite3
 
 def connect_db():
-    return sqlite3.connect("library.db")
+    conn = sqlite3.connect("library.db")
+    conn.execute("PRAGMA foreign_keys = ON;")  # Ensure foreign keys are enforced
+    return conn
+
+# Function to list all items in the library
+'''
+def list_all_items():
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Item")
+    items = cursor.fetchall()
+    conn.close()
+
+    if items:
+        print("\nAll Library Items:")
+        for item in items:
+            print(item)
+    else:
+        print("No items found in the library.")
+'''
+
+
 # Function to find an item in the library
 def find_item(title):
     conn = connect_db()
@@ -15,24 +36,55 @@ def find_item(title):
 def borrow_item(member_id, item_id):
     conn = connect_db()
     cursor = conn.cursor()
+    
+    # Check if the member exists
+    cursor.execute("SELECT * FROM Member WHERE MemberID = ?", (member_id,))
+    if not cursor.fetchone():
+        print("Error: Member does not exist.")
+        conn.close()
+        return
+
+    # Check item availability
     cursor.execute("SELECT Status FROM Item WHERE ItemID = ?", (item_id,))
     item = cursor.fetchone()
     
     if item and item[0] == "Available":
-        cursor.execute("INSERT INTO BorrowingTransaction (MemberID, ItemID, CheckoutDate, DueDate) VALUES (?, ?, DATE('now'), DATE('now', '+14 days'))", (member_id, item_id))
-        cursor.execute("UPDATE Item SET Status = 'Borrowed' WHERE ItemID = ?", (item_id,))
+        cursor.execute("""
+            INSERT INTO BorrowingTransaction (MemberID, ItemID, CheckoutDate, DueDate)
+            VALUES (?, ?, DATE('now'), DATE('now', '+14 days'))
+        """, (member_id, item_id))
+
+        # Update status to 'CheckedOut'
+        cursor.execute("UPDATE Item SET Status = 'CheckedOut' WHERE ItemID = ?", (item_id,))
         conn.commit()
         print("Item borrowed successfully!")
     else:
         print("Item is not available.")
+    
     conn.close()
 
 # Function to return an item
 def return_item(item_id):
     conn = connect_db()
     cursor = conn.cursor()
+    
+    # Check if the item exists
+    cursor.execute("SELECT Status FROM Item WHERE ItemID = ?", (item_id,))
+    if not cursor.fetchone():
+        print("Error: Item does not exist.")
+        conn.close()
+        return
+
+    # Set the item status back to Available
     cursor.execute("UPDATE Item SET Status = 'Available' WHERE ItemID = ?", (item_id,))
-    cursor.execute("UPDATE BorrowingTransaction SET ReturnDate = DATE('now') WHERE ItemID = ? AND ReturnDate IS NULL", (item_id,))
+    
+    # Update transaction with return date
+    cursor.execute("""
+        UPDATE BorrowingTransaction 
+        SET ReturnDate = DATE('now') 
+        WHERE ItemID = ? AND ReturnDate IS NULL
+    """, (item_id,))
+    
     conn.commit()
     print("Item returned successfully!")
     conn.close()
@@ -41,12 +93,18 @@ def return_item(item_id):
 def donate_item(title, author, publication_year, item_type):
     conn = connect_db()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO Item (Title, Author, PublicationYear, Type, Status) VALUES (?, ?, ?, ?, 'Available')", (title, author, publication_year, item_type))
-    conn.commit()
-    print("Item donated successfully!")
+    try:
+        cursor.execute("""
+            INSERT INTO Item (Title, Author, PublicationYear, Type, Status)
+            VALUES (?, ?, ?, ?, 'Available')
+        """, (title, author, publication_year, item_type))
+        conn.commit()
+        print("Item donated successfully!")
+    except sqlite3.IntegrityError:
+        print("Error: Could not donate item.")
     conn.close()
 
-# Function to find events
+# Function to find events in the library
 def find_event(event_name):
     conn = connect_db()
     cursor = conn.cursor()
@@ -59,81 +117,121 @@ def find_event(event_name):
 def register_event(user_id, event_id):
     conn = connect_db()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO EventRegistrations (UserID, EventID) VALUES (?, ?)", (user_id, event_id))
-    conn.commit()
-    print("Registered for event successfully!")
-    conn.close()
-
-# Function to volunteer
-def volunteer(user_id, role):
-    conn = connect_db()
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO Volunteers (UserID, Role) VALUES (?, ?)", (user_id, role))
-    conn.commit()
-    print("Volunteer registration successful!")
+    
+    # Validate if user exists
+    cursor.execute("SELECT * FROM People WHERE PeopleID = ?", (user_id,))
+    if not cursor.fetchone():
+        print("Error: User does not exist.")
+        conn.close()
+        return
+    
+    try:
+        cursor.execute("INSERT INTO SignUp (EventID, PeopleID) VALUES (?, ?)", (event_id, user_id))
+        conn.commit()
+        print("Registered for event successfully!")
+    except sqlite3.IntegrityError:
+        print("Error: Could not register for the event.")
+    
     conn.close()
 
 # Function to ask for librarian help
 def ask_librarian(user_id, question):
     conn = connect_db()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO LibrarianRequests (UserID, Question, RequestDate) VALUES (?, ?, DATE('now'))", (user_id, question))
-    conn.commit()
-    print("Librarian request submitted!")
+    
+    # Validate member exists
+    cursor.execute("SELECT * FROM Member WHERE MemberID = ?", (user_id,))
+    if not cursor.fetchone():
+        print("Error: Member does not exist.")
+        conn.close()
+        return
+    
+    try:
+        cursor.execute("INSERT INTO Requests (MemberID, Question) VALUES (?, ?)", (user_id, question))
+        conn.commit()
+        print("Librarian request submitted!")
+    except sqlite3.IntegrityError:
+        print("Error: Could not submit librarian request.")
+    
     conn.close()
 
-
-
 def main():
-    
     while True:
-        print("\nLibrary Menu:")
+        print("\nLibrary Database Menu:")
         print("1. Find an item")
         print("2. Borrow an item")
         print("3. Return an item")
         print("4. Donate an item")
         print("5. Find an event")
         print("6. Register for an event")
-        print("7. Volunteer for the library")
-        print("8. Ask for librarian help")
-        print("9. Exit")
-        
+        print("7. Ask for librarian help")
+        print("8. Exit")
+
         choice = input("Enter your choice: ")
         
         if choice == "1":
             title = input("Enter item title: ")
-            print(find_item(title))
+            items = find_item(title)
+            if items:
+                for item in items:
+                    print(item)
+            else:
+                print("No items found.")
+        
         elif choice == "2":
-            member_id = int(input("Enter your Member ID: "))
-            item_id = int(input("Enter Item ID: "))
-            borrow_item(member_id, item_id)
+            member_id = input("Enter your Member ID: ")
+            item_id = input("Enter Item ID: ")
+            if member_id.isdigit() and item_id.isdigit():
+                borrow_item(int(member_id), int(item_id))
+            else:
+                print("Invalid input. Please enter valid IDs.")
+        
         elif choice == "3":
-            item_id = int(input("Enter Item ID to return: "))
-            return_item(item_id)
+            item_id = input("Enter Item ID to return: ")
+            if item_id.isdigit():
+                return_item(int(item_id))
+            else:
+                print("Invalid input. Please enter a valid ID.")
+        
         elif choice == "4":
             title = input("Enter title: ")
             author = input("Enter author: ")
             publication_year = input("Enter publication year: ")
             item_type = input("Enter item type (Digital/Physical): ")
-            donate_item(title, author, publication_year, item_type)
+            if publication_year.isdigit():
+                donate_item(title, author, int(publication_year), item_type)
+            else:
+                print("Invalid year. Please enter a numeric value.")
+        
         elif choice == "5":
             event_name = input("Enter event name: ")
-            print(find_event(event_name))
+            events = find_event(event_name)
+            if events:
+                for event in events:
+                    print(event)
+            else:
+                print("No events found.")
+        
         elif choice == "6":
-            user_id = int(input("Enter your User ID: "))
-            event_id = int(input("Enter Event ID: "))
-            register_event(user_id, event_id)
+            user_id = input("Enter your Member ID: ")
+            event_id = input("Enter Event ID: ")
+            if user_id.isdigit() and event_id.isdigit():
+                register_event(int(user_id), int(event_id))
+            else:
+                print("Invalid input. Please enter valid IDs.")
+        
         elif choice == "7":
-            user_id = int(input("Enter your User ID: "))
-            role = input("Enter role you want to volunteer for: ")
-            volunteer(user_id, role)
-        elif choice == "8":
-            user_id = int(input("Enter your User ID: "))
+            user_id = input("Enter your Member ID: ")
             question = input("Enter your question for the librarian: ")
-            ask_librarian(user_id, question)
-        elif choice == "9":
+            if user_id.isdigit():
+                ask_librarian(int(user_id), question)
+            else:
+                print("Invalid input. Please enter a valid Member ID.")
+        
+        elif choice == "8":
             print("Exiting...")
             break
+        
         else:
             print("Invalid choice. Try again.")
 
