@@ -47,15 +47,17 @@ function Navigation({ user, onLogout }) {
           </div>
         )}
       </div>
-      <nav className="main-nav">
-        <div className="nav-left">
-          <img src="/images/library-logo-ver2.png" alt="Library Logo" className="nav-logo" />
-        </div>
-        <div className="search-container">
-          <input type="text" placeholder="Search..." className="search-input" />
-          <button className="search-button">Search</button>
-        </div>
-      </nav>
+      {user && (
+        <nav className="main-nav">
+          <div className="nav-left">
+            <img src="/images/library-logo-ver2.png" alt="Library Logo" className="nav-logo" />
+          </div>
+          <div className="search-container">
+            <input type="text" placeholder="Search..." className="search-input" />
+            <button className="search-button">Search</button>
+          </div>
+        </nav>
+      )}
     </>
   );
 }
