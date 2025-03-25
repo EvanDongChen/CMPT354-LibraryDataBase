@@ -1,32 +1,15 @@
+# app/__init__.py
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_cors import CORS
-from flask_jwt_extended import JWTManager
-from config import Config
+from app.extensions import db
+from app.routes import api_bp
+from app.models import *  # if needed
 
-db = SQLAlchemy()
-migrate = Migrate()
-jwt = JWTManager()
-cors = CORS()
-
-def create_app(config_class=Config):
+def create_app():
     app = Flask(__name__)
-    app.config.from_object(config_class)
-    
-    # Initialize extensions
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///yourdb.sqlite'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
     db.init_app(app)
-    migrate.init_app(app, db)
-    jwt.init_app(app)
-    cors.init_app(app, resources={
-        r"/api/*": {
-            "origins": app.config['CORS_ORIGINS'],
-            "supports_credentials": True
-        }
-    })
-    
-    # Register blueprints
-    from app.routes import api_bp
     app.register_blueprint(api_bp)
-    
+
     return app

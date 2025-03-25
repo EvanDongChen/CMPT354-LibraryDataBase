@@ -1,13 +1,18 @@
-from sqlalchemy import text
-from backend.app import create_app, db
+import sys
+import os
 from datetime import datetime
-from backend.app.models import (
+
+# Ensure backend is on the Python path
+sys.path.append(os.path.join(os.path.dirname(__file__), "backend"))
+
+from app import create_app, db
+from app.models import (
     People, Member, Employee, Event, AudienceType, EventLocation,
     Item, DigitalItem, PhysicalItem, ProposedItem, BorrowingTransaction,
     Fine, Request, IsHeldAt, Recommended, Organizes, SignUp, IsDue
 )
 
-# Create app and context
+# Create app and push context
 app = create_app()
 app.app_context().push()
 
@@ -15,7 +20,7 @@ def clear_database():
     db.reflect()
     db.drop_all()
     db.create_all()
-    print("Database reset complete")
+    print("✅ Database reset complete")
 
 def populate_data():
     # Add People
@@ -27,63 +32,51 @@ def populate_data():
     ]
     db.session.add_all(people_data)
 
-    # Add Members
     member_data = [
         Member(MemberID=1, PeopleID=1, JoinDate=datetime(2024, 1, 10), MembershipStatus="Active"),
         Member(MemberID=2, PeopleID=2, JoinDate=datetime(2024, 2, 15), MembershipStatus="Active"),
     ]
     db.session.add_all(member_data)
 
-    # Add Employees
     employee_data = [
         Employee(EmployeeID=1, PeopleID=3, Position="Librarian", WagePerHour=25.00),
         Employee(EmployeeID=2, PeopleID=4, Position="Assistant Librarian", WagePerHour=20.00),
     ]
     db.session.add_all(employee_data)
 
-    # Add Event Locations
     locations = [
         EventLocation(LocationID=1, RoomName="Main Hall", Capacity=100),
         EventLocation(LocationID=2, RoomName="Conference Room", Capacity=30),
     ]
     db.session.add_all(locations)
 
-    # Add Audience Types
     audiences = [
         AudienceType(AudienceTypeID=1, AudienceName="Children", MinAge=5, MaxAge=12),
         AudienceType(AudienceTypeID=2, AudienceName="Adults", MinAge=18),
     ]
     db.session.add_all(audiences)
 
-    # Add Events
     events = [
         Event(EventID=1, EventName="Story Time", Type="Reading", EventDate=datetime(2024, 3, 25, 10, 0)),
         Event(EventID=2, EventName="Author Talk", Type="Discussion", EventDate=datetime(2024, 4, 10, 18, 0)),
     ]
     db.session.add_all(events)
 
-    # Add Event Locations (IsHeldAt)
-    held_at = [
+    db.session.add_all([
         IsHeldAt(EventID=1, LocationID=1),
         IsHeldAt(EventID=2, LocationID=2),
-    ]
-    db.session.add_all(held_at)
+    ])
 
-    # Add Event Audiences (Recommended)
-    recommendations = [
+    db.session.add_all([
         Recommended(EventID=1, AudienceTypeID=1),
         Recommended(EventID=2, AudienceTypeID=2),
-    ]
-    db.session.add_all(recommendations)
+    ])
 
-    # Add Event Organizers (Organizes)
-    organizers = [
+    db.session.add_all([
         Organizes(EmployeeID=1, EventID=1),
         Organizes(EmployeeID=2, EventID=2),
-    ]
-    db.session.add_all(organizers)
+    ])
 
-    # Add Items
     items = [
         Item(ItemID=1, Title="The Great Adventure", Status="Available", PublicationYear=2020, Author="Author A", Type="Physical"),
         Item(ItemID=2, Title="Digital World", Status="Available", PublicationYear=2021, Author="Author B", Type="Digital"),
@@ -91,77 +84,39 @@ def populate_data():
     ]
     db.session.add_all(items)
 
-    # Add Physical Items
-    physical_items = [
+    db.session.add_all([
         PhysicalItem(ItemID=1, ShelfNumber="A101"),
         PhysicalItem(ItemID=3, ShelfNumber="B205"),
-    ]
-    db.session.add_all(physical_items)
+    ])
 
-    # Add Digital Items
-    digital_items = [
+    db.session.add_all([
         DigitalItem(ItemID=2, URL="https://example.com/digital-world"),
-    ]
-    db.session.add_all(digital_items)
+    ])
 
-    # Add Proposed Items
-    proposed_items = [
+    db.session.add_all([
         ProposedItem(ProposalID=1, ProposalDate=datetime(2024, 3, 1), IntendedType="Physical", Title="New Science Book", Author="New Author"),
-    ]
-    db.session.add_all(proposed_items)
+    ])
 
-    # Add Borrowing Transactions
-    transactions = [
-        BorrowingTransaction(
-            TransactionID=1,
-            MemberID=1,
-            ItemID=3,
-            CheckoutDate=datetime(2024, 3, 1),
-            DueDate=datetime(2024, 3, 15),
-            ReturnDate=None
-        ),
-    ]
-    db.session.add_all(transactions)
+    db.session.add_all([
+        BorrowingTransaction(TransactionID=1, MemberID=1, ItemID=3, CheckoutDate=datetime(2024, 3, 1), DueDate=datetime(2024, 3, 15), ReturnDate=None),
+    ])
 
-    # Add Fines
-    fines = [
-        Fine(
-            FineID=1,
-            TransactionID=1,
-            Amount=5.00,
-            DateReturned=None,
-            PaidDate=None,
-            PaidStatus=False
-        ),
-    ]
-    db.session.add_all(fines)
-
-    # Add IsDue relationships
-    is_due = [
+    db.session.add_all([
+        Fine(FineID=1, TransactionID=1, Amount=5.00, DateReturned=None, PaidDate=None, PaidStatus=False),
         IsDue(FineID=1, TransactionID=1),
-    ]
-    db.session.add_all(is_due)
+    ])
 
-    # Add Requests
-    requests = [
-        Request(
-            RequestID=1,
-            PeopleID=1,
-            Question="Do you have more books by this author?",
-            Answer="Yes, we'll order more titles."
-        ),
-    ]
-    db.session.add_all(requests)
+    db.session.add_all([
+        Request(RequestID=1, PeopleID=1, Question="Do you have more books by this author?", Answer="Yes, we'll order more titles."),
+    ])
 
-    # Add Event Signups
-    signups = [
+    db.session.add_all([
         SignUp(RegistrationID=1, EventID=1, PeopleID=1, Attended=False),
         SignUp(RegistrationID=2, EventID=2, PeopleID=2, Attended=False),
-    ]
-    db.session.add_all(signups)
+    ])
 
     db.session.commit()
-    print("Database populated with sample data.")
+    print("✅ Database populated with sample data.")
 
 if __name__ == "__main__":
     clear_database()

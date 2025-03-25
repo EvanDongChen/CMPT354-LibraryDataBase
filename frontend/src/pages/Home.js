@@ -3,47 +3,29 @@ import { getItems } from '../api';
 
 function Home() {
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchItems = async () => {
+    const fetchData = async () => {
       try {
-        const response = await getItems();
-        setItems(response.data);
-      } catch (error) {
-        console.error('Error fetching items:', error);
-      } finally {
-        setLoading(false);
+        const res = await getItems();
+        setItems(res.data);
+      } catch (err) {
+        console.error('Error fetching items:', err);
       }
     };
-    fetchItems();
+    fetchData();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-
   return (
-    <div className="home-container">
+    <div>
       <h1>Library Items</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Status</th>
-            <th>Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map(item => (
-            <tr key={item.id}>
-              <td>{item.title}</td>
-              <td>{item.author}</td>
-              <td>{item.status}</td>
-              <td>{item.type}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <ul>
+        {items.map(item => (
+          <li key={item.ItemID}>
+            <strong>{item.Title}</strong> by {item.Author} ({item.Type}) - {item.Status}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

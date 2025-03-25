@@ -7,25 +7,23 @@ function Login() {
     people_id: '',
     phone: ''
   });
-  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     try {
       const response = await login(formData);
-      if (response.success) {
+      if (response.data.success) {
+        localStorage.setItem('user', JSON.stringify(response.data));
         navigate('/');
       } else {
-        setError('Invalid credentials');
+        alert('Login failed. Please check your credentials.');
       }
-    } catch (err) {
-      setError('Login failed. Please try again.');
-      console.error('Login error:', err);
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('An error occurred during login.');
     }
   };
-
 
   return (
     <div className="login-container">
