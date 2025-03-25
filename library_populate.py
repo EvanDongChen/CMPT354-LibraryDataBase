@@ -1,4 +1,6 @@
+from sqlalchemy import text
 from app import create_app, db
+from datetime import datetime
 from app.models import (
     People, Member, Employee, Event, AudienceType, EventLocation,
     Item, DigitalItem, PhysicalItem, ProposedItem, BorrowingTransaction,
@@ -10,28 +12,12 @@ app = create_app()
 app.app_context().push()
 
 def clear_database():
-    """Clear all database tables"""
-    # Disable foreign key constraints
-    db.session.execute('PRAGMA foreign_keys=OFF;')
-    
-    # Get all table names in correct deletion order
-    tables = [
-        'is_due', 'fine', 'borrowing_transaction', 'sign_up', 'organizes',
-        'recommended', 'is_held_at', 'request', 'physical_item', 'digital_item',
-        'item', 'proposed_item', 'employee', 'member', 'event', 'audience_type',
-        'event_location', 'people'
-    ]
-    
-    for table in tables:
-        db.session.execute(f'DELETE FROM {table};')
-    
-    # Re-enable foreign key constraints
-    db.session.execute('PRAGMA foreign_keys=ON;')
-    db.session.commit()
-    print("Database cleared.")
+    db.reflect()
+    db.drop_all()
+    db.create_all()
+    print("Database reset complete")
 
 def populate_data():
-    """Populate database with sample data"""
     # Add People
     people_data = [
         People(PeopleID=1, FirstName="Alice", LastName="Smith", Phone="123-456-7890", Email="alice@example.com"),
