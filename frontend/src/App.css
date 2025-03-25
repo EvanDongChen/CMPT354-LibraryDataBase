@@ -278,31 +278,35 @@ body {
 
 .nav-bar {
   background-color: #f5eacf;
-  padding: 1rem 0;
+  padding: 0;  /* Remove padding */
   display: flex;
   justify-content: flex-start;
-  gap: 1rem;
+  gap: 0;  /* Remove gap */
   border-bottom: 1px solid #dee2e6;
   flex-wrap: wrap;
   padding-left: 8rem;
+  height: 48px;  /* Match logout bar height */
 }
 
 .nav-button {
-  background-color: #ceb793;
-  color: white;
+  background-color: #f5eacf;
+  color: #333;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  padding: 0 1.5rem;
+  border-radius: 0;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s, transform 0.2s;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: background-color 0.2s;
   min-width: 120px;
   font-family: "Times New Roman", Times, serif;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .nav-button:hover {
-  background-color: #85865f;
-  transform: translateY(-2px);
+  background-color: #85865f;  /* Keep the same hover color */
 }
 
 .main-content {
@@ -531,8 +535,7 @@ body {
 /* Active Button State */
 .nav-button.active {
   background-color: #4f583d;
-  transform: translateY(2px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: white;
 }
 
 .section h2 {
