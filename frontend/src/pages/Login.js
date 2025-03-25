@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api';
 
-function Login() {
+function Login({ onLogin }) {
   const [formData, setFormData] = useState({
     people_id: '',
     phone: ''
@@ -17,10 +17,8 @@ function Login() {
     try {
       const response = await login(formData);
       if (response.data.success) {
-        // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(response.data));
-        // Redirect to home page
-        navigate('/home');
+        onLogin(response.data); // Call the onLogin prop with user data
+        navigate('/home', { replace: true });
       } else {
         setError('Invalid credentials. Please try again.');
       }

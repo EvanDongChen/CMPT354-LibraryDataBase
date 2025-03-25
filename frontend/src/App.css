@@ -132,50 +132,69 @@ body {
 .logout-button {
   background: none;
   border: none;
-  color: #007bff;
+  color: white !important;
   cursor: pointer;
   font-size: 1rem;
-  padding: 0.5rem 1rem;
-  text-decoration: underline;
+  text-decoration: none;
   font-family: "Times New Roman", Times, serif;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  padding: 0.5rem 1rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .logout-button:hover {
-  color: #0056b3;
+  color: #e0e0e0 !important;
 }
 
 /* Logout Bar */
 .logout-bar {
   background-color: #f8f9fa;
-  padding: 0.5rem 0;
+  padding: 0;
   display: flex;
   justify-content: flex-end;
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 4px solid #4f583d;
   width: 100%;
+  height: 48px;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-right: 8rem;
+  padding-right: 0;
 }
 
 .logout-container {
-  background-color: #4CAF50;
-  padding: 8px 16px;
-  border-radius: 4px;
   display: flex;
   align-items: center;
-  margin-right: 8rem;
+  height: 100%;
+  background-color: #4f583d;
+  padding: 0 1rem;
+  margin-right: 0;  /* Remove margin since parent has it */
 }
 
 .logout-button {
   background: none;
   border: none;
-  color: white;
+  color: white !important;
   cursor: pointer;
   font-size: 1rem;
-  padding: 0.5rem 1rem;
   text-decoration: none;
   font-family: "Times New Roman", Times, serif;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  padding: 0.5rem 1rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .logout-button:hover {
-  color: #e8f5e9;
+  color: #e0e0e0 !important;
 }
 
 /* Navigation Styles */
@@ -519,3 +538,30 @@ body {
 .section h2 {
   font-family: "Times New Roman", Times, serif;
 }
+
+.welcome-text {
+  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.auth-links {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-right: 8rem;
+}
+
+.nav-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #4CAF50;
+}
+
