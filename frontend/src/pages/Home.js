@@ -225,15 +225,18 @@ function Home() {
         {searchResults.length > 0 ? (
           <>
             <h2>Search Results for "{searchQuery}"</h2>
-            {searchResults.map((item) => (
-              <div key={item.ItemID} className="item-card">
-                <h3>{item.Title}</h3>
-                <p>Author: {item.Author}</p>
-                <p>Type: {item.Type}</p>
-                <p>Status: {item.Status}</p>
-                <p>Publication Year: {item.PublicationYear}</p>
-              </div>
-            ))}
+            <div className="search-results">
+              {searchResults.map((item) => (
+                <div key={item.ItemID} className="item-card">
+                  <h3>{item.Title}</h3>
+                  <div className="item-details">
+                    <p><strong>Author:</strong> {item.Author}</p>
+                    <p><strong>Type:</strong> {item.Type}</p>
+                    <p><strong>Status:</strong> {item.Status === 'Available' ? '✅' : '❌'}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </>
         ) : searchQuery ? (
           <div className="no-results">
@@ -242,15 +245,18 @@ function Home() {
         ) : (
           <>
             <h2>Library Items</h2>
-            {items.map((item) => (
-              <div key={item.ItemID} className="item-card">
-                <h3>{item.Title}</h3>
-                <p>Author: {item.Author}</p>
-                <p>Type: {item.Type}</p>
-                <p>Status: {item.Status}</p>
-                <p>Publication Year: {item.PublicationYear}</p>
-              </div>
-            ))}
+            <div className="search-results">
+              {items.map(item => (
+                <div key={item.ItemID} className="item-card">
+                  <h3>{item.Title}</h3>
+                  <div className="item-details">
+                    <p><strong>Author:</strong> {item.Author}</p>
+                    <p><strong>Type:</strong> {item.Type}</p>
+                    <p><strong>Status:</strong> {item.Status === 'Available' ? '✅' : '❌'}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </>
         )}
       </div>

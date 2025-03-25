@@ -221,19 +221,15 @@ body {
 
 .search-container {
   display: flex;
-  gap: 0;  /* Remove gap between input and button */
+  gap: 0;
   align-items: center;
   padding-right: 8rem;
 }
 
-.search-input {
-  padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 0;  /* Remove border radius */
-  font-size: 1rem;
-  width: 300px;
-  font-family: "Times New Roman", Times, serif;
-  border-right: none;  /* Remove right border to connect with button */
+.search-form {
+  display: flex;
+  gap: 0;
+  align-items: center;
 }
 
 .search-button {
@@ -241,18 +237,47 @@ body {
   background-color: #4f583d;
   color: white;
   border: none;
-  border-radius: 0;  /* Remove border radius */
+  border-radius: 0;
   cursor: pointer;
   font-size: 1rem;
   font-family: "Times New Roman", Times, serif;
   transition: background-color 0.2s;
-  height: 100%;  /* Match input height */
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.show-all-button {
+  padding: 0.5rem 1rem;
+  background-color: #8fa6ac;  /* New color for Show All button */
+  color: white;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: "Times New Roman", Times, serif;
+  transition: background-color 0.2s;
+  height: 100%;
   display: flex;
   align-items: center;
 }
 
 .search-button:hover {
-  background-color: #85865f;  /* Match hover color used in other buttons */
+  background-color: #85865f;
+}
+
+.show-all-button:hover {
+  background-color: #7a8f94;  /* Slightly darker shade for hover */
+}
+
+.search-input {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 0;
+  font-size: 1rem;
+  width: 300px;
+  font-family: "Times New Roman", Times, serif;
+  border-left: none;  /* Remove left border to connect with button */
 }
 
 .nav-right {
@@ -317,6 +342,93 @@ body {
 .main-content {
   padding: 2rem;
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.item-card {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.item-card h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-family: "Times New Roman", Times, serif;
+  flex: 1;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.item-card .item-details {
+  display: flex;
+  gap: 30px;
+  margin: 0 20px;
+}
+
+.item-card .item-details p {
+  margin: 0;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.item-card .item-details strong {
+  color: #4f583d;
+  font-weight: bold;
+  min-width: 80px;
+}
+
+.item-card .item-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.item-card .item-actions button {
+  padding: 8px 16px;
+  background-color: #4f583d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: "Times New Roman", Times, serif;
+  font-weight: bold;
+}
+
+.item-card .item-actions button:hover {
+  background-color: #85865f;
+}
+
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.no-results p {
+  color: #666;
+  font-size: 1.1rem;
 }
 
 .main-content h2 {
