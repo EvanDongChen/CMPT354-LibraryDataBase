@@ -7,8 +7,7 @@ import { logout, searchItems } from './api';
 import './App.css';
 
 // Protected Route component
-const ProtectedRoute = ({ children }) => {
-  const user = localStorage.getItem('user');
+const ProtectedRoute = ({ children, user }) => {
   if (!user) {
     return <Navigate to="/login" replace />;
   }
@@ -16,8 +15,9 @@ const ProtectedRoute = ({ children }) => {
 };
 
 // Navigation component
-function Navigation() {
+function Navigation({ user, onLogout }) {
   const navigate = useNavigate();
+
   const [user, setUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -60,7 +60,7 @@ function Navigation() {
   const handleLogout = async () => {
     try {
       await logout();
-      localStorage.removeItem('user');
+      onLogout();
       navigate('/login', { replace: true });
     } catch (error) {
       console.error('Logout failed:', error);
@@ -71,17 +71,22 @@ function Navigation() {
     <>
       <div className="logout-bar">
         {user ? (
-          <div className="logout-container">
-            <button onClick={handleLogout} className="logout-button">
-              Logout
-            </button>
+          <div className="user-section">
+            <span className="welcome-text">Welcome, {user.firstName} {user.lastName}!</span>
+            <div className="logout-container">
+              <button onClick={handleLogout} className="logout-button">
+                Logout
+              </button>
+            </div>
           </div>
         ) : (
-          <Link to="/login" className="nav-link">
-            Login
-          </Link>
+          <div className="auth-links">
+            <Link to="/login" className="nav-link">Login</Link>
+            <Link to="/signup" className="nav-link">Sign Up</Link>
+          </div>
         )}
       </div>
+
       <nav className="main-nav">
         <div className="nav-left">
           <img src="/images/library-logo-ver2.png" alt="Library Logo" className="nav-logo" />
@@ -100,25 +105,57 @@ function Navigation() {
           </form>
         </div>
       </nav>
+
+      {user && (
+        <nav className="main-nav">
+          <div className="nav-left">
+            <img src="/images/library-logo-ver2.png" alt="Library Logo" className="nav-logo" />
+          </div>
+          <div className="search-container">
+            <input type="text" placeholder="Search..." className="search-input" />
+            <button className="search-button">Search</button>
+          </div>
+        </nav>
+      )}
+
     </>
   );
 }
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+  };
+
+  const handleLogin = (userData) => {
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+  };
+  
   return (
     <BrowserRouter>
       <div className="app-container">
         <header>
-          <Navigation />
+          <Navigation user={user} onLogout={handleLogout} />
         </header>
         <main>
           <Routes>
             <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<Login onLogin={handleLogin} />} />
             <Route 
               path="/home" 
               element={
-                <ProtectedRoute>
+                <ProtectedRoute user={user}>
                   <Home />
                 </ProtectedRoute>
               } 
@@ -126,6 +163,10 @@ function App() {
             <Route path="/test" element={<Test />} />
           </Routes>
         </main>
+        <footer className="footer">
+          Made for CMPT354 SPRING 2025,<br />
+          Evan Chen and Emmy Fong
+        </footer>
       </div>
     </BrowserRouter>
   );

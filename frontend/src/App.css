@@ -92,7 +92,7 @@ body {
 .login-container button {
   width: 100%;
   padding: 0.75rem;
-  background-color: #007bff;
+  background-color: #4f583d;
   color: white;
   border: none;
   border-radius: 4px;
@@ -102,7 +102,7 @@ body {
 }
 
 .login-container button:hover {
-  background-color: #0056b3;
+  background-color: #85865f;
 }
 
 .error-message {
@@ -132,50 +132,69 @@ body {
 .logout-button {
   background: none;
   border: none;
-  color: #007bff;
+  color: white !important;
   cursor: pointer;
   font-size: 1rem;
-  padding: 0.5rem 1rem;
-  text-decoration: underline;
+  text-decoration: none;
   font-family: "Times New Roman", Times, serif;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  padding: 0.5rem 1rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .logout-button:hover {
-  color: #0056b3;
+  color: #e0e0e0 !important;
 }
 
 /* Logout Bar */
 .logout-bar {
   background-color: #f8f9fa;
-  padding: 0.5rem 0;
+  padding: 0;
   display: flex;
   justify-content: flex-end;
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 4px solid #4f583d;
   width: 100%;
+  height: 48px;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-right: 8rem;
+  padding-right: 0;
 }
 
 .logout-container {
-  background-color: #4CAF50;
-  padding: 8px 16px;
-  border-radius: 4px;
   display: flex;
   align-items: center;
-  margin-right: 8rem;
+  height: 100%;
+  background-color: #4f583d;
+  padding: 0 1rem;
+  margin-right: 0;  /* Remove margin since parent has it */
 }
 
 .logout-button {
   background: none;
   border: none;
-  color: white;
+  color: white !important;
   cursor: pointer;
   font-size: 1rem;
-  padding: 0.5rem 1rem;
   text-decoration: none;
   font-family: "Times New Roman", Times, serif;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  padding: 0.5rem 1rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .logout-button:hover {
-  color: #e8f5e9;
+  color: #e0e0e0 !important;
 }
 
 /* Navigation Styles */
@@ -202,53 +221,38 @@ body {
 
 .search-container {
   display: flex;
-  justify-content: center;
+  gap: 0;  /* Remove gap between input and button */
   align-items: center;
-  flex: 1;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.search-form {
-  display: flex;
-  gap: 10px;
-  width: 100%;
+  padding-right: 8rem;
 }
 
 .search-input {
-  flex: 1;
-  padding: 8px 12px;
+  padding: 0.5rem 1rem;
   border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-.search-button,
-.show-all-button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  border-radius: 0;  /* Remove border radius */
+  font-size: 1rem;
+  width: 300px;
+  font-family: "Times New Roman", Times, serif;
+  border-right: none;  /* Remove right border to connect with button */
 }
 
 .search-button {
-  background-color: #4CAF50;
+  padding: 0.5rem 1rem;
+  background-color: #4f583d;
   color: white;
+  border: none;
+  border-radius: 0;  /* Remove border radius */
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: "Times New Roman", Times, serif;
+  transition: background-color 0.2s;
+  height: 100%;  /* Match input height */
+  display: flex;
+  align-items: center;
 }
 
 .search-button:hover {
-  background-color: #45a049;
-}
-
-.show-all-button {
-  background-color: #f0f0f0;
-  color: #333;
-}
-
-.show-all-button:hover {
-  background-color: #e0e0e0;
+  background-color: #85865f;  /* Match hover color used in other buttons */
 }
 
 .nav-right {
@@ -279,42 +283,46 @@ body {
 
 .nav-bar {
   background-color: #f5eacf;
-  padding: 1rem 0;
+  padding: 0;  /* Remove padding */
   display: flex;
   justify-content: flex-start;
-  gap: 1rem;
+  gap: 0;  /* Remove gap */
   border-bottom: 1px solid #dee2e6;
   flex-wrap: wrap;
   padding-left: 8rem;
+  height: 48px;  /* Match logout bar height */
 }
 
 .nav-button {
-  background-color: #ceb793;
-  color: white;
+  background-color: #f5eacf;
+  color: #333;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  padding: 0 1.5rem;
+  border-radius: 0;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s, transform 0.2s;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: background-color 0.2s;
   min-width: 120px;
   font-family: "Times New Roman", Times, serif;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .nav-button:hover {
-  background-color: #85865f;
-  transform: translateY(-2px);
+  background-color: #85865f;  /* Keep the same hover color */
 }
 
 .main-content {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 2rem;
+  flex-grow: 1;
 }
 
 .main-content h2 {
-  margin-bottom: 20px;
-  color: #333;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .main-content ul {
@@ -346,54 +354,32 @@ body {
 }
 
 /* Find Section */
-.find-section {
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+.search-box {
+  display: flex;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
-.find-section h2 {
-  color: #2c3e50;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.search-controls {
-  margin-bottom: 20px;
-}
-
-.search-results {
-  margin-top: 20px;
-}
-
-.search-results ul {
-  list-style: none;
-  padding: 0;
-}
-
-.search-results li {
-  padding: 15px;
-  border: 1px solid #dee2e6;
+.search-box input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
   border-radius: 4px;
-  margin-bottom: 10px;
-  background-color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
+  font-size: 16px;
 }
 
-.search-results li:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.search-results p {
-  text-align: center;
-  color: #666;
-  font-style: italic;
-  padding: 20px;
-  background-color: #f8f9fa;
+.search-box .search-button {
+  padding: 10px 20px;
+  background-color: #4f583d;  /* Match dark green color */
+  color: white;
+  border: none;
   border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-box .search-button:hover {
+  background-color: #85865f;  /* Match hover color used in other buttons */
 }
 
 /* Borrow and Return Sections */
@@ -554,45 +540,48 @@ body {
 /* Active Button State */
 .nav-button.active {
   background-color: #4f583d;
-  transform: translateY(2px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: white;
 }
 
 .section h2 {
   font-family: "Times New Roman", Times, serif;
 }
 
-.no-results {
-  text-align: center;
-  color: #666;
-  font-style: italic;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 4px;
-  margin-top: 20px;
-}
-
-.item-card {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 16px;
-  margin: 16px 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
-}
-
-.item-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.item-card h3 {
-  margin: 0 0 8px 0;
+.welcome-text {
   color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+  font-style: italic;
 }
 
-.item-card p {
-  margin: 4px 0;
-  color: #666;
+.auth-links {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-right: 8rem;
 }
+
+.nav-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #4CAF50;
+}
+
+.footer {
+  background-color: #4f583d;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 0.9rem;
+}
+

@@ -66,34 +66,40 @@ function Home() {
       {/* Navigation Bar */}
       <div className="nav-bar">
         <button 
+          className={`nav-button ${activeSection === null ? 'active' : ''}`}
+          onClick={() => handleNavClick(null)}
+        >
+          Home
+        </button>
+        <button 
           className={`nav-button ${activeSection === 'borrow' ? 'active' : ''}`}
           onClick={() => handleNavClick('borrow')}
         >
-          📚 Borrow
+          Borrow
         </button>
         <button 
           className={`nav-button ${activeSection === 'return' ? 'active' : ''}`}
           onClick={() => handleNavClick('return')}
         >
-          ↩️ Return
+          Return
         </button>
         <button 
           className={`nav-button ${activeSection === 'donate' ? 'active' : ''}`}
           onClick={() => handleNavClick('donate')}
         >
-          🎁 Donate
+          Donate
         </button>
         <button 
           className={`nav-button ${activeSection === 'events' ? 'active' : ''}`}
           onClick={() => handleNavClick('events')}
         >
-          📅 Events
+          Events
         </button>
         <button 
           className={`nav-button ${activeSection === 'contact' ? 'active' : ''}`}
           onClick={() => handleNavClick('contact')}
         >
-          📞 Contact
+          Contact
         </button>
       </div>
 
