@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom';
 import Login from './pages/Login';
 import Home from './pages/Home';
@@ -16,9 +16,16 @@ const ProtectedRoute = ({ children }) => {
 };
 
 // Navigation component
-const Navigation = () => {
+function Navigation() {
   const navigate = useNavigate();
-  const user = localStorage.getItem('user');
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -26,22 +33,37 @@ const Navigation = () => {
       localStorage.removeItem('user');
       navigate('/login', { replace: true });
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('Logout failed:', error);
     }
   };
 
   return (
-    <nav>
-      {user && <Link to="/home">Home</Link>}
-      <Link to="/test">Test</Link>
-      {user ? (
-        <button onClick={handleLogout} className="logout-button">Logout</button>
-      ) : (
-        <Link to="/login">Login</Link>
-      )}
-    </nav>
+    <>
+      <div className="logout-bar">
+        {user ? (
+          <div className="logout-container">
+            <button onClick={handleLogout} className="logout-button">
+              Logout
+            </button>
+          </div>
+        ) : (
+          <Link to="/login" className="nav-link">
+            Login
+          </Link>
+        )}
+      </div>
+      <nav className="main-nav">
+        <div className="nav-left">
+          <img src="/images/library-logo-ver2.png" alt="Library Logo" className="nav-logo" />
+        </div>
+        <div className="search-container">
+          <input type="text" placeholder="Search..." className="search-input" />
+          <button className="search-button">Search</button>
+        </div>
+      </nav>
+    </>
   );
-};
+}
 
 function App() {
   return (
