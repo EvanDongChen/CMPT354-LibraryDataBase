@@ -77,7 +77,7 @@ def return_item(item_id):
 
     # Set the item status back to Available
     cursor.execute("UPDATE Item SET Status = 'Available' WHERE ItemID = ?", (item_id,))
-    
+        
     # Update transaction with return date
     cursor.execute("""
         UPDATE BorrowingTransaction 

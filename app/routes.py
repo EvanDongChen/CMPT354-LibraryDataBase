@@ -5,6 +5,9 @@ from app.models import People
 def init_routes(app):
     @app.route('/')
     @app.route('/base')
+    @app.route('/test')
+    def test():
+        return render_template('test.html', title='Home')
     @app.route('/index')
     def index():
         return render_template('index.html', title='Home')
