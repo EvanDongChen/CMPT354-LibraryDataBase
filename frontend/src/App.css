@@ -573,3 +573,15 @@ body {
   color: #4CAF50;
 }
 
+.footer {
+  background-color: #4f583d;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 0.9rem;
+}
+

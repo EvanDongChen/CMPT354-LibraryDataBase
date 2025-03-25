@@ -101,6 +101,10 @@ function App() {
             <Route path="/test" element={<Test />} />
           </Routes>
         </main>
+        <footer className="footer">
+          Made for CMPT354 SPRING 2025,<br />
+          Evan Chen and Emmy Fong
+        </footer>
       </div>
     </BrowserRouter>
   );
