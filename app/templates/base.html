@@ -4,16 +4,20 @@
         {% if title %}
         <title>{{ title }} - Library Database</title>
         {% else %}
-        <title>microblog</title>
+        <title>Library Database</title>
         {% endif %}
     </head>
     <body>
         <div>
             Library Database:
             <a href="{{ url_for('index') }}">Home</a>
-            <a href="{{ url_for('login') }}">Login</a>
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+            {% endif %}
         </div>
-        <hr>
+        <hr> 
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul>
