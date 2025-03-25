@@ -17,16 +17,7 @@ const ProtectedRoute = ({ children, user }) => {
 // Navigation component
 function Navigation({ user, onLogout }) {
   const navigate = useNavigate();
-
-  const [user, setUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-
-  useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  }, []);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -87,37 +78,26 @@ function Navigation({ user, onLogout }) {
         )}
       </div>
 
-      <nav className="main-nav">
-        <div className="nav-left">
-          <img src="/images/library-logo-ver2.png" alt="Library Logo" className="nav-logo" />
-        </div>
-        <div className="search-container">
-          <form onSubmit={handleSearch} className="search-form">
-            <input 
-              type="text" 
-              placeholder="Search library items..." 
-              className="search-input"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button type="submit" className="search-button">Search</button>
-            <button type="button" onClick={handleShowAll} className="show-all-button">Show All</button>
-          </form>
-        </div>
-      </nav>
-
       {user && (
         <nav className="main-nav">
           <div className="nav-left">
             <img src="/images/library-logo-ver2.png" alt="Library Logo" className="nav-logo" />
           </div>
           <div className="search-container">
-            <input type="text" placeholder="Search..." className="search-input" />
-            <button className="search-button">Search</button>
+            <form onSubmit={handleSearch} className="search-form">
+              <input 
+                type="text" 
+                placeholder="Search library items..." 
+                className="search-input"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button type="submit" className="search-button">Search</button>
+              <button type="button" onClick={handleShowAll} className="show-all-button">Show All</button>
+            </form>
           </div>
         </nav>
       )}
-
     </>
   );
 }
