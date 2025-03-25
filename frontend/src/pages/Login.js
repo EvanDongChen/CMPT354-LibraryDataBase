@@ -7,30 +7,42 @@ function Login() {
     people_id: '',
     phone: ''
   });
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    
     try {
       const response = await login(formData);
       if (response.data.success) {
+        // Store user data in localStorage
         localStorage.setItem('user', JSON.stringify(response.data));
-        navigate('/');
+        // Redirect to home page
+        navigate('/home');
       } else {
-        alert('Login failed. Please check your credentials.');
+        setError('Invalid credentials. Please try again.');
       }
     } catch (error) {
       console.error('Login error:', error);
-      alert('An error occurred during login.');
+      setError('An error occurred during login. Please try again.');
     }
   };
 
   return (
     <div className="login-container">
-      <h2>Library Login</h2>
+      <div className="login-header">
+        <img 
+          src="/images/library-logo.png" 
+          alt="Library Logo" 
+          className="login-logo"
+        />
+      </div>
+      {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>People ID</label>
+          <label>User ID</label>
           <input
             type="text"
             value={formData.people_id}

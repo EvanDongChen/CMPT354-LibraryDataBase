@@ -3,8 +3,15 @@ import { getItems } from '../api';
 
 function Home() {
   const [items, setItems] = useState([]);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
+    // Get user data from localStorage
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+
     const fetchData = async () => {
       try {
         const res = await getItems();
@@ -18,6 +25,11 @@ function Home() {
 
   return (
     <div>
+      {user && (
+        <div className="welcome-message">
+          <h2>Welcome, {user.firstName} {user.lastName}!</h2>
+        </div>
+      )}
       <h1>Library Items</h1>
       <ul>
         {items.map(item => (

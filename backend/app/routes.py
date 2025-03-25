@@ -31,6 +31,10 @@ def login():
         })
     return jsonify({'success': False}), 401
 
+@api_bp.route('/logout', methods=['POST'])
+def logout():
+    return jsonify({'success': True})
+
 @api_bp.route('/api/items', methods=['GET'])
 def get_items():
     items = Item.query.all()
