@@ -10,3 +10,4 @@ const api = axios.create({
 export const getItems = () => api.get('/api/items');
 export const login = (credentials) => api.post('/login', credentials);
 export const logout = () => api.post('/logout');
+export const searchItems = (query) => api.get(`/api/items/search?q=${encodeURIComponent(query)}`);

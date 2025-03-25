@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { getItems } from '../api';
+import { getItems, searchItems } from '../api';
+import { useLocation } from 'react-router-dom';
 
 function Home() {
   const [items, setItems] = useState([]);
   const [user, setUser] = useState(null);
   const [activeSection, setActiveSection] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const location = useLocation();
 
   useEffect(() => {
     // Get user data from localStorage
@@ -13,6 +17,7 @@ function Home() {
       setUser(JSON.parse(userData));
     }
 
+    // Fetch all items on initial load
     const fetchData = async () => {
       try {
         const res = await getItems();
@@ -22,7 +27,35 @@ function Home() {
       }
     };
     fetchData();
-  }, []);
+
+    // Update search state from navigation
+    if (location.state?.isSearching) {
+      setSearchResults(location.state.searchResults);
+      setSearchQuery(location.state.searchQuery);
+    } else {
+      setSearchResults([]);
+      setSearchQuery('');
+    }
+  }, [location.state]); // Update when location state changes
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) {
+      return; // Do nothing if search is empty
+    }
+
+    try {
+      const res = await searchItems(searchQuery);
+      setSearchResults(res.data);
+    } catch (err) {
+      console.error('Error searching items:', err);
+    }
+  };
+
+  const handleShowAll = () => {
+    setSearchResults([]);
+    setSearchQuery('');
+  };
 
   const handleNavClick = (section) => {
     setActiveSection(activeSection === section ? null : section);
@@ -72,24 +105,6 @@ function Home() {
 
       {/* Dynamic Sections */}
       <div className="section-container">
-        {activeSection === 'find' && (
-          <div className="section find-section">
-            <h2>Find Items</h2>
-            <div className="search-box">
-              <input type="text" placeholder="Search by title, author, or type..." />
-              <button className="search-button">Search</button>
-            </div>
-            <div className="filter-options">
-              <select>
-                <option value="">All Types</option>
-                <option value="book">Books</option>
-                <option value="digital">Digital Items</option>
-                <option value="magazine">Magazines</option>
-              </select>
-            </div>
-          </div>
-        )}
-
         {activeSection === 'borrow' && (
           <div className="section borrow-section">
             <h2>Borrow Items</h2>
@@ -207,14 +222,37 @@ function Home() {
 
       {/* Main Content */}
       <div className="main-content">
-        <h2>Library Items</h2>
-        <ul>
-          {items.map(item => (
-            <li key={item.ItemID}>
-              <strong>{item.Title}</strong> by {item.Author} ({item.Type}) - {item.Status}
-            </li>
-          ))}
-        </ul>
+        {searchResults.length > 0 ? (
+          <>
+            <h2>Search Results for "{searchQuery}"</h2>
+            {searchResults.map((item) => (
+              <div key={item.ItemID} className="item-card">
+                <h3>{item.Title}</h3>
+                <p>Author: {item.Author}</p>
+                <p>Type: {item.Type}</p>
+                <p>Status: {item.Status}</p>
+                <p>Publication Year: {item.PublicationYear}</p>
+              </div>
+            ))}
+          </>
+        ) : searchQuery ? (
+          <div className="no-results">
+            <p>No items found matching your search "{searchQuery}"</p>
+          </div>
+        ) : (
+          <>
+            <h2>Library Items</h2>
+            {items.map((item) => (
+              <div key={item.ItemID} className="item-card">
+                <h3>{item.Title}</h3>
+                <p>Author: {item.Author}</p>
+                <p>Type: {item.Type}</p>
+                <p>Status: {item.Status}</p>
+                <p>Publication Year: {item.PublicationYear}</p>
+              </div>
+            ))}
+          </>
+        )}
       </div>
     </div>
   );
