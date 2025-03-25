@@ -90,6 +90,16 @@ class Item(db.Model):
     physical_item = db.relationship('PhysicalItem', back_populates='item', uselist=False)
     transactions = db.relationship('BorrowingTransaction', back_populates='item')
 
+    def serialize(self):
+        return {
+            'ItemID': self.ItemID,
+            'Title': self.Title,
+            'Status': self.Status,
+            'PublicationYear': self.PublicationYear,
+            'Author': self.Author,
+            'Type': self.Type
+        }
+
 class DigitalItem(db.Model):
     __tablename__ = 'DigitalItem'
     

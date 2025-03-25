@@ -39,3 +39,15 @@ def logout():
 def get_items():
     items = Item.query.all()
     return jsonify([item.serialize() for item in items])
+
+@api_bp.route('/api/items/search', methods=['GET'])
+def search_items():
+    query = request.args.get('q', '')
+    if not query:
+        # Return all items if search query is empty
+        items = Item.query.all()
+    else:
+        # Search in title only, similar to find_item in library_app.py
+        items = Item.query.filter(Item.Title.ilike(f'%{query}%')).all()
+    
+    return jsonify([item.serialize() for item in items])

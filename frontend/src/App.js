@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useNavigate, Link } from 'react
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Test from './pages/Test';
-import { logout } from './api';
+import { logout, searchItems } from './api';
 import './App.css';
 
 // Protected Route component
@@ -19,6 +19,7 @@ const ProtectedRoute = ({ children }) => {
 function Navigation() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -26,6 +27,35 @@ function Navigation() {
       setUser(JSON.parse(userData));
     }
   }, []);
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    
+    try {
+      const response = await searchItems(searchQuery);
+      navigate('/home', { 
+        state: { 
+          searchQuery, 
+          searchResults: response.data,
+          isSearching: true 
+        } 
+      });
+    } catch (error) {
+      console.error('Search error:', error);
+    }
+  };
+
+  const handleShowAll = () => {
+    setSearchQuery('');
+    navigate('/home', { 
+      state: { 
+        searchQuery: '', 
+        searchResults: [],
+        isSearching: false 
+      } 
+    });
+  };
 
   const handleLogout = async () => {
     try {
@@ -57,8 +87,17 @@ function Navigation() {
           <img src="/images/library-logo-ver2.png" alt="Library Logo" className="nav-logo" />
         </div>
         <div className="search-container">
-          <input type="text" placeholder="Search..." className="search-input" />
-          <button className="search-button">Search</button>
+          <form onSubmit={handleSearch} className="search-form">
+            <input 
+              type="text" 
+              placeholder="Search library items..." 
+              className="search-input"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button type="submit" className="search-button">Search</button>
+            <button type="button" onClick={handleShowAll} className="show-all-button">Show All</button>
+          </form>
         </div>
       </nav>
     </>
