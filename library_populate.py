@@ -1,7 +1,7 @@
 from sqlalchemy import text
-from app import create_app, db
+from backend.app import create_app, db
 from datetime import datetime
-from app.models import (
+from backend.app.models import (
     People, Member, Employee, Event, AudienceType, EventLocation,
     Item, DigitalItem, PhysicalItem, ProposedItem, BorrowingTransaction,
     Fine, Request, IsHeldAt, Recommended, Organizes, SignUp, IsDue
