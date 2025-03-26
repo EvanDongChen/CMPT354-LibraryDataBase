@@ -1,0 +1,29 @@
+.home-container {
+    padding: 20px;
+  }
+  
+  .items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .items-table th, .items-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .items-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .loading, .error {
+    padding: 20px;
+    text-align: center;
+    font-size: 1.2em;
+  }
+  
+  .error {
+    color: #d32f2f;
+  }
