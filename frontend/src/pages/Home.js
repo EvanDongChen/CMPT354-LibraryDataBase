@@ -228,6 +228,7 @@ function Home() {
             <div className="search-results">
               {searchResults.map((item) => (
                 <div key={item.ItemID} className="item-card">
+                  <img src="/images/book.png" alt="Book cover" />
                   <h3>{item.Title}</h3>
                   <div className="item-details">
                     <p><strong>Author:</strong> {item.Author}</p>
@@ -248,6 +249,7 @@ function Home() {
             <div className="search-results">
               {items.map(item => (
                 <div key={item.ItemID} className="item-card">
+                  <img src="/images/book.png" alt="Book cover" />
                   <h3>{item.Title}</h3>
                   <div className="item-details">
                     <p><strong>Author:</strong> {item.Author}</p>
