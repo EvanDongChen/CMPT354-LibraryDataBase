@@ -16,11 +16,19 @@ function Login({ onLogin }) {
     
     try {
       const response = await login(formData);
+      console.log('Login response:', response.data);  // Debug log
+      
       if (response.data.success) {
-        onLogin(response.data); // Call the onLogin prop with user data
+        // Store the complete user data
+        const userData = {
+          ...response.data,
+          member_id: response.data.member_id  // Ensure member_id is included
+        };
+        console.log('Storing user data:', userData);  // Debug log
+        onLogin(userData);
         navigate('/home', { replace: true });
       } else {
-        setError('Invalid credentials. Please try again.');
+        setError(response.data.message || 'Invalid credentials. Please try again.');
       }
     } catch (error) {
       console.error('Login error:', error);
