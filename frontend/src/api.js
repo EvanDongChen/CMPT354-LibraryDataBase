@@ -82,30 +82,9 @@ export const returnItem = async (itemId) => {
 
 export const donateItem = async (itemData) => {
   try {
-    console.log('\n=== Donate Request Debug ===');
-    console.log('Starting donation process...');
-    console.log('Request Data:', itemData);
-    console.log('API URL:', API_URL);
-    console.log('Full URL:', `${API_URL}/api/items/donate`);
-    
     const response = await api.post('/api/items/donate', itemData);
-    console.log('\n=== Donate Response Debug ===');
-    console.log('Response Status:', response.status);
-    console.log('Response Headers:', response.headers);
-    console.log('Response Data:', response.data);
     return response.data;
   } catch (error) {
-    console.error('\n=== Donate Error Debug ===');
-    console.error('Error Type:', error.constructor.name);
-    console.error('Error Message:', error.message);
-    console.error('Error Response:', error.response);
-    console.error('Error Request:', error.request);
-    console.error('Error Config:', error.config);
-    if (error.response) {
-      console.error('Error Response Data:', error.response.data);
-      console.error('Error Response Status:', error.response.status);
-      console.error('Error Response Headers:', error.response.headers);
-    }
     throw new Error(error.response?.data?.error || 'Failed to donate item');
   }
 };

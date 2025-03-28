@@ -242,47 +242,28 @@ def return_item_route():
 
 @api_bp.route('/api/items/donate', methods=['POST', 'OPTIONS'])
 def donate_item():
-    print("\n=== Donate Request Debug ===")
-    print(f"Request Method: {request.method}")
-    print(f"Request Headers: {dict(request.headers)}")
-    print(f"Request Origin: {request.headers.get('Origin')}")
-    print(f"Request Content Type: {request.headers.get('Content-Type')}")
-    print(f"Request URL: {request.url}")
-    print(f"Request Base URL: {request.base_url}")
-    print(f"Request Path: {request.path}")
-    
     if request.method == 'OPTIONS':
-        print("\nHandling OPTIONS request")
         response = make_response()
         response.headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
         response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
         response.headers.add('Access-Control-Allow-Credentials', 'true')
-        print(f"OPTIONS Response Headers: {dict(response.headers)}")
         return response
     
     try:
-        print("\nParsing request data...")
         data = request.get_json()
-        print(f"Request Data: {data}")
         
         # Validate required fields
-        print("\nValidating required fields...")
         required_fields = ['title', 'author', 'publication_year', 'type']
         for field in required_fields:
             if field not in data:
-                print(f"Missing required field: {field}")
                 return jsonify({'error': f'Missing required field: {field}'}), 400
-            print(f"Field {field} is present: {data[field]}")
         
         # Validate item type
-        print("\nValidating item type...")
         valid_item_types = ['Book', 'Magazine', 'Scientific Journal', 'CD', 'Record']
         if data['type'] not in valid_item_types:
-            print(f"Invalid item type: {data['type']}")
             return jsonify({'error': f'Invalid item type. Must be one of: {", ".join(valid_item_types)}'}), 400
         
-        print("\nCreating new item...")
         # Create the base item
         new_item = Item(
             Title=data['title'],
@@ -292,54 +273,35 @@ def donate_item():
             Status='Available'  # New items start as Available
         )
         
-        print(f"New item created: {new_item.serialize()}")
         db.session.add(new_item)
         db.session.flush()  # Get the ItemID
-        print(f"Item ID assigned: {new_item.ItemID}")
         
         # Create the specific item type (Physical or Digital)
-        print("\nCreating specific item type...")
         if data.get('url'):  # If URL is provided, it's a digital item
-            print("Creating digital item...")
             digital_item = DigitalItem(
                 ItemID=new_item.ItemID,
                 URL=data['url']
             )
             db.session.add(digital_item)
-            print("Digital item created")
         else:  # If no URL, it's a physical item
-            print("Creating physical item...")
             physical_item = PhysicalItem(
                 ItemID=new_item.ItemID,
                 ShelfNumber="TBD"  # Temporary value until staff assigns it
             )
             db.session.add(physical_item)
-            print("Physical item created")
         
-        print("\nCommitting changes to database...")
         db.session.commit()
-        print("Changes committed successfully")
         
-        print("\nPreparing success response...")
-        response_data = {
+        response = jsonify({
             'message': 'Item donation submitted successfully. Library staff will process your donation.',
             'item': new_item.serialize()
-        }
-        print(f"Response data: {response_data}")
-        
-        response = jsonify(response_data)
+        })
         response.headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
         response.headers.add('Access-Control-Allow-Credentials', 'true')
-        print(f"Response headers: {dict(response.headers)}")
         return response
     except Exception as e:
-        print(f"\nError occurred: {str(e)}")
-        print(f"Error type: {type(e)}")
-        import traceback
-        print(f"Traceback: {traceback.format_exc()}")
         db.session.rollback()
         error_response = jsonify({'error': str(e)}), 500
         error_response[0].headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
         error_response[0].headers.add('Access-Control-Allow-Credentials', 'true')
-        print(f"Error response headers: {dict(error_response[0].headers)}")
         return error_response
