@@ -83,7 +83,7 @@ class Item(db.Model):
     Status = db.Column(db.String(20), nullable=False)
     PublicationYear = db.Column(db.Integer)
     Author = db.Column(db.String(100))
-    Type = db.Column(db.String(20), nullable=False)  # Digital or Physical
+    Type = db.Column(db.String(50), nullable=False)  # Book, Magazine, Journal, CD, Record, etc.
     
     # Relationships
     digital_item = db.relationship('DigitalItem', back_populates='item', uselist=False)

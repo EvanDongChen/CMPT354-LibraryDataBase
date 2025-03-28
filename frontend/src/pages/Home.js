@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getItems, searchItems, borrowItem, returnItem } from '../api';
+import { getItems, searchItems, borrowItem, returnItem, donateItem } from '../api';
 import { useLocation } from 'react-router-dom';
 
 function Home() {
@@ -10,6 +10,14 @@ function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [borrowMessage, setBorrowMessage] = useState({ type: '', text: '' });
   const [returnMessage, setReturnMessage] = useState({ type: '', text: '' });
+  const [donateForm, setDonateForm] = useState({
+    title: '',
+    author: '',
+    publication_year: '',
+    type: 'Book',
+    url: ''
+  });
+  const [donateMessage, setDonateMessage] = useState({ type: '', text: '' });
   const location = useLocation();
 
   useEffect(() => {
@@ -129,6 +137,51 @@ function Home() {
     }
   };
 
+  const handleDonateSubmit = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      setDonateMessage({ type: 'error', text: 'Please log in to donate items' });
+      return;
+    }
+
+    try {
+      await donateItem(donateForm);
+      setDonateMessage({ type: 'success', text: 'Item donated successfully!' });
+      
+      // Reset form
+      setDonateForm({
+        title: '',
+        author: '',
+        publication_year: '',
+        type: 'Book',
+        url: ''
+      });
+
+      // Refresh the items list
+      const res = await getItems();
+      setItems(res.data);
+
+      // Clear message after 3 seconds
+      setTimeout(() => {
+        setDonateMessage({ type: '', text: '' });
+      }, 3000);
+    } catch (error) {
+      setDonateMessage({ type: 'error', text: error.message || 'Failed to donate item' });
+      // Clear error message after 3 seconds
+      setTimeout(() => {
+        setDonateMessage({ type: '', text: '' });
+      }, 3000);
+    }
+  };
+
+  const handleDonateFormChange = (e) => {
+    const { name, value } = e.target;
+    setDonateForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   return (
     <div className="home-container">
       {/* Navigation Bar */}
@@ -220,22 +273,69 @@ function Home() {
         {activeSection === 'donate' && (
           <div className="section donate-section">
             <h2>Donate Items</h2>
-            <form className="donate-form">
+            {donateMessage.text && (
+              <div className={`message ${donateMessage.type}`}>
+                {donateMessage.text}
+              </div>
+            )}
+            <form className="donate-form" onSubmit={handleDonateSubmit}>
               <div className="form-group">
                 <label>Item Title:</label>
-                <input type="text" placeholder="Enter item title" />
+                <input 
+                  type="text" 
+                  name="title"
+                  value={donateForm.title}
+                  onChange={handleDonateFormChange}
+                  placeholder="Enter item title" 
+                  required
+                />
               </div>
               <div className="form-group">
                 <label>Author:</label>
-                <input type="text" placeholder="Enter author name" />
+                <input 
+                  type="text" 
+                  name="author"
+                  value={donateForm.author}
+                  onChange={handleDonateFormChange}
+                  placeholder="Enter author name" 
+                  required
+                />
               </div>
               <div className="form-group">
-                <label>Type:</label>
-                <select>
-                  <option value="book">Book</option>
-                  <option value="digital">Digital Item</option>
-                  <option value="magazine">Magazine</option>
+                <label>Publication Year:</label>
+                <input 
+                  type="number" 
+                  name="publication_year"
+                  value={donateForm.publication_year}
+                  onChange={handleDonateFormChange}
+                  placeholder="Enter publication year" 
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Item Type:</label>
+                <select 
+                  name="type"
+                  value={donateForm.type}
+                  onChange={handleDonateFormChange}
+                  required
+                >
+                  <option value="Book">Book</option>
+                  <option value="Magazine">Magazine</option>
+                  <option value="Scientific Journal">Scientific Journal</option>
+                  <option value="CD">CD</option>
+                  <option value="Record">Record</option>
                 </select>
+              </div>
+              <div className="form-group">
+                <label>URL (Optional - for digital items):</label>
+                <input 
+                  type="url" 
+                  name="url"
+                  value={donateForm.url}
+                  onChange={handleDonateFormChange}
+                  placeholder="Enter digital item URL" 
+                />
               </div>
               <button type="submit" className="submit-button">Submit Donation</button>
             </form>

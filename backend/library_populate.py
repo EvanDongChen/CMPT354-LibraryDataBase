@@ -78,19 +78,25 @@ def populate_data():
     ])
 
     items = [
-        Item(ItemID=1, Title="The Great Adventure", Status="Available", PublicationYear=2020, Author="Author A", Type="Physical"),
-        Item(ItemID=2, Title="Digital World", Status="Available", PublicationYear=2021, Author="Author B", Type="Digital"),
-        Item(ItemID=3, Title="Science Today", Status="CheckedOut", PublicationYear=2019, Author="Author C", Type="Physical"),
+        Item(ItemID=1, Title="The Great Adventure", Status="Available", PublicationYear=2020, Author="Author A", Type="Book"),
+        Item(ItemID=2, Title="Digital World", Status="Available", PublicationYear=2021, Author="Author B", Type="Book"),
+        Item(ItemID=3, Title="Science Today", Status="CheckedOut", PublicationYear=2019, Author="Author C", Type="Magazine"),
+        Item(ItemID=4, Title="Nature Journal", Status="Available", PublicationYear=2022, Author="Various", Type="Scientific Journal"),
+        Item(ItemID=5, Title="Classical Collection", Status="Available", PublicationYear=2020, Author="Various Artists", Type="CD"),
+        Item(ItemID=6, Title="Jazz Classics", Status="Available", PublicationYear=1960, Author="Various Artists", Type="Record"),
     ]
     db.session.add_all(items)
 
     db.session.add_all([
-        PhysicalItem(ItemID=1, ShelfNumber="A101"),
-        PhysicalItem(ItemID=3, ShelfNumber="B205"),
+        PhysicalItem(ItemID=1, ShelfNumber="A101"),  # Book
+        PhysicalItem(ItemID=3, ShelfNumber="B205"),  # Magazine
+        PhysicalItem(ItemID=5, ShelfNumber="C303"),  # CD
+        PhysicalItem(ItemID=6, ShelfNumber="D404"),  # Record
     ])
 
     db.session.add_all([
-        DigitalItem(ItemID=2, URL="https://example.com/digital-world"),
+        DigitalItem(ItemID=2, URL="https://example.com/digital-world"),  # Digital Book
+        DigitalItem(ItemID=4, URL="https://example.com/nature-journal"),  # Digital Journal
     ])
 
     db.session.add_all([
