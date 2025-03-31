@@ -434,12 +434,7 @@ def register():
     print(f"Request Data: {request.get_json()}")
     
     if request.method == 'OPTIONS':
-        response = make_response()
-        response.headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-        response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
-        response.headers.add('Access-Control-Allow-Credentials', 'true')
-        return response
+        return jsonify({}), 200
 
     data = request.json
     print(f"Processing registration data: {data}")
@@ -450,10 +445,7 @@ def register():
     if not all(field in data for field in required_fields):
         missing_fields = [field for field in required_fields if field not in data]
         print(f"Missing required fields: {missing_fields}")
-        response = jsonify({'error': f'Missing required fields: {", ".join(missing_fields)}'}), 400
-        response[0].headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
-        response[0].headers.add('Access-Control-Allow-Credentials', 'true')
-        return response
+        return jsonify({'error': f'Missing required fields: {", ".join(missing_fields)}'}), 400
     
     # Check if person already exists with this phone number
     existing_person = People.query.filter_by(Phone=data['phone']).first()
@@ -462,10 +454,7 @@ def register():
         # If person exists, check if they're already a member
         if existing_person.member:
             print("Person is already a member")
-            response = jsonify({'error': 'Already registered as a member'}), 400
-            response[0].headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
-            response[0].headers.add('Access-Control-Allow-Credentials', 'true')
-            return response
+            return jsonify({'error': 'Already registered as a member'}), 400
         
         print("Creating member record for existing person")
         # If person exists but not a member, create member record
@@ -478,21 +467,15 @@ def register():
         try:
             db.session.commit()
             print(f"Successfully created member record with ID: {new_member.MemberID}")
-            response = jsonify({
+            return jsonify({
                 'message': 'Member registration successful',
                 'member_id': new_member.MemberID,
                 'people_id': existing_person.PeopleID
             }), 201
-            response[0].headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
-            response[0].headers.add('Access-Control-Allow-Credentials', 'true')
-            return response
         except Exception as e:
             print(f"Error creating member record: {str(e)}")
             db.session.rollback()
-            response = jsonify({'error': str(e)}), 500
-            response[0].headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
-            response[0].headers.add('Access-Control-Allow-Credentials', 'true')
-            return response
+            return jsonify({'error': str(e)}), 500
     
     print("Creating new person record")
     # Create new person
@@ -520,22 +503,16 @@ def register():
         db.session.commit()
         print(f"Successfully created member record with ID: {new_member.MemberID}")
         
-        response = jsonify({
+        return jsonify({
             'message': 'Registration successful',
             'member_id': new_member.MemberID,
             'people_id': new_person.PeopleID
         }), 201
-        response[0].headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
-        response[0].headers.add('Access-Control-Allow-Credentials', 'true')
-        return response
         
     except Exception as e:
         print(f"Error during registration: {str(e)}")
         db.session.rollback()
-        response = jsonify({'error': str(e)}), 500
-        response[0].headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
-        response[0].headers.add('Access-Control-Allow-Credentials', 'true')
-        return response
+        return jsonify({'error': str(e)}), 500
 
 @api_bp.route('/api/events/register', methods=['POST', 'OPTIONS'])
 @cross_origin()

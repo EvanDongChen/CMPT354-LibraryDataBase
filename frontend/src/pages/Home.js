@@ -361,6 +361,12 @@ function Home() {
         >
           Contact
         </button>
+        <button 
+          className={`nav-button`}
+          onClick={() => window.location.href = '/volunteer'}
+        >
+          Volunteer
+        </button>
       </div>
 
       {/* Dynamic Sections */}
