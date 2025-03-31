@@ -13,6 +13,7 @@ class People(db.Model):
     # Relationships
     member = db.relationship('Member', back_populates='person', uselist=False)
     employee = db.relationship('Employee', back_populates='person', uselist=False)
+    volunteer = db.relationship('Volunteer', back_populates='person', uselist=False)
     signups = db.relationship('SignUp', back_populates='person')
     requests = db.relationship('Request', back_populates='person')
 
@@ -229,3 +230,15 @@ class IsDue(db.Model):
     
     FineID = db.Column(db.Integer, db.ForeignKey('Fine.FineID'), primary_key=True)
     TransactionID = db.Column(db.Integer, db.ForeignKey('BorrowingTransaction.TransactionID'), primary_key=True)
+
+class Volunteer(db.Model):
+    __tablename__ = 'Volunteer'
+    
+    VolunteerID = db.Column(db.Integer, primary_key=True)
+    PeopleID = db.Column(db.Integer, db.ForeignKey('People.PeopleID'), unique=True)
+    JoinDate = db.Column(db.Date, nullable=False)
+    Status = db.Column(db.String(20), nullable=False)  # Active, Inactive
+    Role = db.Column(db.String(100), nullable=False)  # e.g., "Book Shelver", "Event Helper"
+    
+    # Relationships
+    person = db.relationship('People', back_populates='volunteer')

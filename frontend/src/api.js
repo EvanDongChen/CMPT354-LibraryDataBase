@@ -10,7 +10,8 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   },
-  withCredentials: true
+  withCredentials: true,
+  credentials: 'include'
 });
 
 // Add request interceptor for debugging
@@ -122,4 +123,29 @@ export const createQuestion = (people_id, question) => {
     people_id,
     question
   });
+};
+
+export const register = (userData) => {
+  console.log('Registering user with data:', userData);
+  return api.post('/api/register', userData, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    withCredentials: true,
+    credentials: 'include'
+  });
+};
+
+export const registerVolunteer = async (volunteerData) => {
+  try {
+    const response = await api.post('/api/volunteer/register', volunteerData);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to register as volunteer');
+  }
+};
+
+export const getVolunteers = () => {
+  return api.get('/api/volunteers');
 };

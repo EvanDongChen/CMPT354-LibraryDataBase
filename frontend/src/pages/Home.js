@@ -223,8 +223,38 @@ function Home() {
 
   const handleEventRegistration = async (eventId) => {
     if (!user) {
-      console.log('No user found, cannot register for event');
-      setEventMessage({ type: 'error', text: 'Please log in to register for events' });
+      // Show non-member registration form
+      const firstName = prompt('Please enter your first name:');
+      if (!firstName) return;
+      
+      const lastName = prompt('Please enter your last name:');
+      if (!lastName) return;
+      
+      const phone = prompt('Please enter your phone number:');
+      if (!phone) return;
+      
+      const email = prompt('Please enter your email:');
+      if (!email) return;
+
+      try {
+        await registerForEvent({
+          event_id: eventId,
+          is_new_registration: true,
+          first_name: firstName,
+          last_name: lastName,
+          phone: phone,
+          email: email
+        });
+        
+        setEventMessage({ type: 'success', text: 'Successfully registered for event!' });
+        
+        // Refresh events list
+        const res = await getEvents();
+        setEvents(res.data);
+      } catch (error) {
+        console.error('Error registering for event:', error);
+        setEventMessage({ type: 'error', text: error.response?.data?.error || 'Failed to register for event' });
+      }
       return;
     }
 
@@ -243,22 +273,18 @@ function Home() {
       console.log('Updated events data:', res.data);
       setEvents(res.data);
 
-      // Clear message after 3 seconds
       setTimeout(() => {
         setEventMessage({ type: '', text: '' });
       }, 3000);
     } catch (error) {
       console.error('Error registering for event:', error);
-      // If the error is "Already registered", treat it as a success case
-      if (error.message === 'Already registered for this event') {
+      if (error.response?.data?.error === 'Already registered for this event') {
         setEventMessage({ type: 'success', text: 'Already registered for this event!' });
-        // Refresh events list to ensure UI is in sync
         const res = await getEvents(user.people_id);
         setEvents(res.data);
       } else {
-        setEventMessage({ type: 'error', text: error.message || 'Failed to register for event' });
+        setEventMessage({ type: 'error', text: error.response?.data?.error || 'Failed to register for event' });
       }
-      // Clear message after 3 seconds
       setTimeout(() => {
         setEventMessage({ type: '', text: '' });
       }, 3000);

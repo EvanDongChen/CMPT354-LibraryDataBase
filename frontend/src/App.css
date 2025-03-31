@@ -855,3 +855,102 @@ body {
   margin-bottom: 1rem;
 }
 
+.volunteer-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.volunteer-container h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.volunteer-container form {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.volunteer-container .form-group {
+  margin-bottom: 15px;
+}
+
+.volunteer-container label {
+  display: block;
+  margin-bottom: 5px;
+  color: #2c3e50;
+}
+
+.volunteer-container select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.volunteer-container .submit-button {
+  background-color: #3498db;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.volunteer-container .submit-button:hover {
+  background-color: #2980b9;
+}
+
+.volunteers-list {
+  margin-top: 30px;
+}
+
+.volunteers-list h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.volunteers-list table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.volunteers-list th,
+.volunteers-list td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.volunteers-list th {
+  background-color: #f8f9fa;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.volunteers-list tr:hover {
+  background-color: #f5f5f5;
+}
+
+.error-message {
+  color: #e74c3c;
+  background-color: #fde8e8;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.success-message {
+  color: #27ae60;
+  background-color: #e8f8f0;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+

@@ -15,16 +15,20 @@ def create_app():
     # Initialize extensions
     db.init_app(app)
 
-    # Configure CORS - more permissive configuration
+    # Configure CORS
     CORS(app, 
          resources={
              r"/*": {
                  "origins": ["http://localhost:3000"],
                  "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                  "allow_headers": ["Content-Type", "Authorization"],
-                 "supports_credentials": True
+                 "supports_credentials": True,
+                 "expose_headers": ["Content-Type", "Authorization"],
+                 "max_age": 600
              }
-         })
+         },
+         supports_credentials=True,
+         allow_credentials=True)
 
     # Register blueprints
     app.register_blueprint(api_bp)
