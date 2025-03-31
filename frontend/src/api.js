@@ -54,10 +54,17 @@ api.interceptors.response.use(
   }
 );
 
-export const getItems = () => api.get('/api/items');
+export const getItems = () => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  return api.get(`/api/items${user ? `?member_id=${user.member_id}` : ''}`);
+};
+
 export const login = (credentials) => api.post('/login', credentials);
 export const logout = () => api.post('/logout');
-export const searchItems = (query) => api.get(`/api/items/search?q=${encodeURIComponent(query)}`);
+export const searchItems = (query) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  return api.get(`/api/items/search?q=${query}${user ? `&member_id=${user.member_id}` : ''}`);
+};
 
 export const borrowItem = async (memberId, itemId) => {
   try {
@@ -71,13 +78,15 @@ export const borrowItem = async (memberId, itemId) => {
   }
 };
 
-export const returnItem = async (itemId) => {
-  try {
-    const response = await api.post('/api/items/return', { item_id: itemId });
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response?.data?.error || 'Failed to return item');
+export const returnItem = (item_id) => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (!user || !user.member_id) {
+    throw new Error('You must be logged in as a member to return items');
   }
+  return api.post('/api/items/return', { 
+    item_id,
+    member_id: user.member_id
+  });
 };
 
 export const donateItem = async (itemData) => {
@@ -87,4 +96,30 @@ export const donateItem = async (itemData) => {
   } catch (error) {
     throw new Error(error.response?.data?.error || 'Failed to donate item');
   }
+};
+
+export const getEvents = (peopleId) => api.get(`/api/events${peopleId ? `?people_id=${peopleId}` : ''}`);
+
+export const registerForEvent = async (eventData) => {
+  try {
+    const response = await api.post('/api/events/register', eventData);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to register for event');
+  }
+};
+
+export const getEmployees = () => {
+  return api.get('/api/employees');
+};
+
+export const getQuestions = (people_id) => {
+  return api.get(`/api/questions?people_id=${people_id}`);
+};
+
+export const createQuestion = (people_id, question) => {
+  return api.post('/api/questions', {
+    people_id,
+    question
+  });
 };

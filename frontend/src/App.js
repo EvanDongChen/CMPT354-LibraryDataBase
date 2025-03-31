@@ -106,22 +106,23 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    // Check for existing user data in localStorage on component mount
     const userData = localStorage.getItem('user');
     if (userData) {
       setUser(JSON.parse(userData));
     }
   }, []);
 
+  const handleLogin = (userData) => {
+    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUser(null);
   };
 
-  const handleLogin = (userData) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
-  };
-  
   return (
     <BrowserRouter>
       <div className="app-container">
@@ -130,8 +131,26 @@ function App() {
         </header>
         <main>
           <Routes>
-            <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="/login" element={<Login onLogin={handleLogin} />} />
+            <Route 
+              path="/" 
+              element={
+                user ? (
+                  <Navigate to="/home" replace />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              } 
+            />
+            <Route 
+              path="/login" 
+              element={
+                user ? (
+                  <Navigate to="/home" replace />
+                ) : (
+                  <Login onLogin={handleLogin} />
+                )
+              } 
+            />
             <Route 
               path="/home" 
               element={

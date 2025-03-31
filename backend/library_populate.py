@@ -29,12 +29,14 @@ def populate_data():
         People(PeopleID=2, FirstName="Bob", LastName="Johnson", Phone="987-654-3210", Email="bob@example.com"),
         People(PeopleID=3, FirstName="Charlie", LastName="Brown", Phone="555-666-7777", Email="charlie@example.com"),
         People(PeopleID=4, FirstName="Diana", LastName="Miller", Phone="111-222-3333", Email="diana@example.com"),
+        People(PeopleID=5, FirstName="test", LastName="tester", Phone="111-111-1111", Email="test@example.com"),
     ]
     db.session.add_all(people_data)
 
     member_data = [
         Member(MemberID=1, PeopleID=1, JoinDate=datetime(2024, 1, 10), MembershipStatus="Active"),
         Member(MemberID=2, PeopleID=2, JoinDate=datetime(2024, 2, 15), MembershipStatus="Active"),
+        Member(MemberID=3, PeopleID=5, JoinDate=datetime(2024, 2, 15), MembershipStatus="Active"),
     ]
     db.session.add_all(member_data)
 
@@ -80,7 +82,7 @@ def populate_data():
     items = [
         Item(ItemID=1, Title="The Great Adventure", Status="Available", PublicationYear=2020, Author="Author A", Type="Book"),
         Item(ItemID=2, Title="Digital World", Status="Available", PublicationYear=2021, Author="Author B", Type="Book"),
-        Item(ItemID=3, Title="Science Today", Status="CheckedOut", PublicationYear=2019, Author="Author C", Type="Magazine"),
+        Item(ItemID=3, Title="Science Today", Status="Available", PublicationYear=2019, Author="Author C", Type="Magazine"),
         Item(ItemID=4, Title="Nature Journal", Status="Available", PublicationYear=2022, Author="Various", Type="Scientific Journal"),
         Item(ItemID=5, Title="Classical Collection", Status="Available", PublicationYear=2020, Author="Various Artists", Type="CD"),
         Item(ItemID=6, Title="Jazz Classics", Status="Available", PublicationYear=1960, Author="Various Artists", Type="Record"),
