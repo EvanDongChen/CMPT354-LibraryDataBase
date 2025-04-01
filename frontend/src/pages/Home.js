@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getItems, searchItems, borrowItem, returnItem, donateItem, getEvents, registerForEvent, getEmployees, getQuestions, createQuestion, registerVolunteer } from '../api';
+import { getItems, searchItems, borrowItem, returnItem, donateItem, getEvents, registerForEvent, getEmployees, getQuestions, createQuestion, registerVolunteer, getVolunteers } from '../api';
 import { useLocation } from 'react-router-dom';
 
 function Home() {
@@ -28,6 +28,8 @@ function Home() {
   const [volunteerForm, setVolunteerForm] = useState({
     role: ''
   });
+  const [volunteerMessage, setVolunteerMessage] = useState({ type: '', text: '' });
+  const [volunteers, setVolunteers] = useState([]);
   const location = useLocation();
 
   useEffect(() => {
@@ -42,13 +44,15 @@ function Home() {
     const fetchData = async () => {
       try {
         console.log('Fetching data with user ID:', user?.people_id);
-        const [itemsRes, eventsRes] = await Promise.all([
+        const [itemsRes, eventsRes, volunteersRes] = await Promise.all([
           getItems(),
-          getEvents(user?.people_id)
+          getEvents(user?.people_id),
+          getVolunteers()
         ]);
         setItems(itemsRes.data);
         console.log('Events data received:', eventsRes.data);
         setEvents(eventsRes.data);
+        setVolunteers(volunteersRes.data);
       } catch (err) {
         console.error('Error fetching data:', err);
       }
@@ -332,29 +336,39 @@ function Home() {
 
   const handleVolunteerSubmit = async (e) => {
     e.preventDefault();
+    
     if (!user) {
-      setQuestionMessage({ type: 'error', text: 'Please log in to register as a volunteer' });
+      alert("Please login to register as a volunteer");
       return;
     }
-
+    
     try {
-      await registerVolunteer(user.people_id, volunteerForm.role);
-      setQuestionMessage({ type: 'success', text: 'Successfully registered as a volunteer!' });
+      const response = await registerVolunteer(user.people_id, volunteerForm.role);
+      console.log("Volunteer registration response:", response);
       
-      // Reset form
-      setVolunteerForm({
-        role: ''
-      });
-
-      // Clear message after 3 seconds
-      setTimeout(() => {
-        setQuestionMessage({ type: '', text: '' });
-      }, 3000);
+      if (response.data.success) {
+        setVolunteerMessage({
+          type: 'success',
+          text: 'Thank you for registering as a volunteer! A staff member will contact you shortly.'
+        });
+        
+        // Reset the form
+        setVolunteerForm({ role: 'Book Shelver' });
+        
+        // Clear success message after 5 seconds
+        setTimeout(() => {
+          setVolunteerMessage({ type: '', text: '' });
+        }, 5000);
+      }
     } catch (error) {
-      setQuestionMessage({ type: 'error', text: error.response?.data?.error || 'Failed to register as volunteer' });
+      console.error("Error registering volunteer:", error);
+      setVolunteerMessage({
+        type: 'error',
+        text: error.response?.data?.error || 'Failed to register as a volunteer. Please try again.'
+      });
       setTimeout(() => {
-        setQuestionMessage({ type: '', text: '' });
-      }, 3000);
+        setVolunteerMessage({ type: '', text: '' });
+      }, 5000);
     }
   };
 
@@ -672,32 +686,54 @@ function Home() {
 
         {activeSection === 'volunteer' && (
           <div className="section volunteer-section">
-            <h2>Volunteer</h2>
-            {!user ? (
-              <p>Please log in to register as a volunteer.</p>
-            ) : (
-              <div className="volunteer-form">
-                <h3>Register as a Volunteer</h3>
-                <form onSubmit={handleVolunteerSubmit}>
-                  <div className="form-group">
-                    <label>Role:</label>
-                    <select 
-                      name="role"
-                      value={volunteerForm.role}
-                      onChange={handleVolunteerFormChange}
-                      required
-                    >
-                      <option value="">Select a role</option>
-                      <option value="Book Shelver">Book Shelver</option>
-                      <option value="Event Helper">Event Helper</option>
-                      <option value="Program Assistant">Program Assistant</option>
-                      <option value="Technology Tutor">Technology Tutor</option>
-                    </select>
-                  </div>
-                  <button type="submit" className="submit-button">Register as Volunteer</button>
-                </form>
+            <h2>Volunteer Opportunities</h2>
+            <p>Join our library volunteer team and make a difference in your community!</p>
+            
+            {volunteerMessage.text && (
+              <div className={`message ${volunteerMessage.type}`}>
+                {volunteerMessage.text}
               </div>
             )}
+            
+            {user ? (
+              <form onSubmit={handleVolunteerSubmit}>
+                <div className="form-group">
+                  <label>Role:</label>
+                  <select 
+                    name="role"
+                    value={volunteerForm.role}
+                    onChange={handleVolunteerFormChange}
+                    required
+                  >
+                    <option value="">Select a role</option>
+                    <option value="Book Shelver">Book Shelver</option>
+                    <option value="Event Helper">Event Helper</option>
+                    <option value="Program Assistant">Program Assistant</option>
+                    <option value="Technology Tutor">Technology Tutor</option>
+                  </select>
+                </div>
+                <button type="submit" className="submit-button">Register as Volunteer</button>
+              </form>
+            ) : (
+              <p>Please login to register as a volunteer.</p>
+            )}
+            
+            <div className="volunteers-list">
+              <h3>Our Current Volunteers</h3>
+              {volunteers.length > 0 ? (
+                <ul className="volunteer-cards">
+                  {volunteers.map(volunteer => (
+                    <li key={volunteer.volunteer_id} className="volunteer-card">
+                      <h4>{volunteer.name}</h4>
+                      <p><strong>Role:</strong> {volunteer.role}</p>
+                      <p><strong>Contact:</strong> {volunteer.email}</p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No volunteers registered yet. Be the first one!</p>
+              )}
+            </div>
           </div>
         )}
       </div>

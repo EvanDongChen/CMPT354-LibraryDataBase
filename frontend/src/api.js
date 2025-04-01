@@ -139,16 +139,38 @@ export const register = (userData) => {
 
 export const registerVolunteer = async (peopleId, role) => {
   try {
-    return await api.post('/api/volunteer/register', {
-      people_id: peopleId,
-      role: role
-    });
+    const response = await api.post('/api/volunteer/register', { people_id: peopleId, role });
+    return response;
   } catch (error) {
-    console.error('Error registering as volunteer:', error);
+    console.error('=== API Error Debug ===');
+    console.error('Error Message:', error.message);
+    console.error('Error Response:', error.response);
+    console.error('Error Request:', error.request);
+    console.error('Error Config:', error.config);
+    if (error.response) {
+      console.error('Error Response Data:', error.response.data);
+      console.error('Error Response Status:', error.response.status);
+      console.error('Error Response Headers:', error.response.headers);
+    }
     throw error;
   }
 };
 
-export const getVolunteers = () => {
-  return api.get('/api/volunteers');
+export const getVolunteers = async () => {
+  try {
+    const response = await api.get('/api/volunteers');
+    return response;
+  } catch (error) {
+    console.error('=== API Error Debug ===');
+    console.error('Error Message:', error.message);
+    console.error('Error Response:', error.response);
+    console.error('Error Request:', error.request);
+    console.error('Error Config:', error.config);
+    if (error.response) {
+      console.error('Error Response Data:', error.response.data);
+      console.error('Error Response Status:', error.response.status);
+      console.error('Error Response Headers:', error.response.headers);
+    }
+    throw error;
+  }
 };

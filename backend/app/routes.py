@@ -678,16 +678,19 @@ def register_volunteer():
         return jsonify({'error': str(e)}), 500
 
 @api_bp.route('/api/volunteers', methods=['GET'])
+@cross_origin(supports_credentials=True)
 def get_volunteers():
     try:
-        volunteers = Volunteer.query.join(People).all()
+        # Find employees with wage = 0 (volunteers)
+        volunteers = Employee.query.filter_by(WagePerHour=0.0).join(People).all()
+        
         return jsonify([{
-            'volunteer_id': vol.VolunteerID,
+            'volunteer_id': vol.EmployeeID,
             'people_id': vol.PeopleID,
             'name': f"{vol.person.FirstName} {vol.person.LastName}",
-            'role': vol.Role,
-            'status': vol.Status,
-            'join_date': vol.JoinDate.strftime('%Y-%m-%d')
+            'role': vol.Position.replace('Volunteer - ', '') if 'Volunteer - ' in vol.Position else vol.Position,
+            'email': vol.person.Email,
+            'phone': vol.person.Phone
         } for vol in volunteers])
     except Exception as e:
         print(f"Error getting volunteers: {str(e)}")

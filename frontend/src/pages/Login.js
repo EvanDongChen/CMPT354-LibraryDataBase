@@ -73,7 +73,7 @@ function Login({ onLogin }) {
       if (response.data.success) {
         setEventMessage({ 
           type: 'success', 
-          text: 'Successfully registered for event! You will receive a confirmation email shortly.' 
+          text: 'Successfully registered for this event! You will receive a confirmation email shortly.' 
         });
         
         // Refresh events list
@@ -94,6 +94,7 @@ function Login({ onLogin }) {
         }, 5000);
       }
     } catch (error) {
+      console.error('Error registering for event:', error);
       setEventMessage({ 
         type: 'error', 
         text: error.response?.data?.error || 'Failed to register for event. Please try again.' 
