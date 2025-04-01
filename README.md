@@ -72,6 +72,15 @@ This project was created for **CMPT 354 - Spring 2025** under the guidance of **
 ---
 
 ## Feature Guide
+Our Library DB features a User system; by default, you will be logged in as Alice Smith. You can Logout out using the logout button at the top right, 
+which will return you to the login screen. Here at the top right, you can sign up for a new account or use one of our existing accounts.
+Alice's Account:
+Member ID: 1
+Phone Number: 123-456-7890
+Bob's Account:
+Member Id: 2
+Phone Number: 987-654-3210
+
 1.📚 **Find an item** in the library
 -Use the search bar on the top right and enter a desired search result; results will appear at the center of the webpage.
 -By default all library items are displayed at the center of the page
@@ -98,8 +107,10 @@ This project was created for **CMPT 354 - Spring 2025** under the guidance of **
 -Click on the Event tab in the nav-bar. Click on the register button to register for an event.
 -Registration is based upon the currently logged-in users.
 -If a user is not a member, they can also register for an event using the login page.
+
 Image: Member Event Reg
 <img width="647" alt="image" src="https://github.com/user-attachments/assets/635d3db1-98d1-4d8f-9537-40a64c2dc167" />
+
 Image: Non-Member Event Reg
 ![image](https://github.com/user-attachments/assets/7a6e9584-079a-4f8d-81f7-31bfc925f474)
 
