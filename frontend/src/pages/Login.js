@@ -12,18 +12,25 @@ function Login({ onLogin }) {
   const [error, setError] = useState('');
   const [events, setEvents] = useState([]);
   const [eventMessage, setEventMessage] = useState({ type: '', text: '' });
-  const [registrationForm, setRegistrationForm] = useState({
-    first_name: '',
-    last_name: '',
-    phone: '',
-    email: ''
-  });
+  const [registrationForms, setRegistrationForms] = useState({});
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await getEvents();
         setEvents(response.data);
+        
+        // Initialize an empty form for each event
+        const initialForms = {};
+        response.data.forEach(event => {
+          initialForms[event.EventID] = {
+            first_name: '',
+            last_name: '',
+            phone: '',
+            email: ''
+          };
+        });
+        setRegistrationForms(initialForms);
       } catch (err) {
         console.error('Error fetching events:', err);
       }
@@ -54,11 +61,14 @@ function Login({ onLogin }) {
     }));
   };
 
-  const handleRegistrationChange = (e) => {
+  const handleRegistrationChange = (eventId, e) => {
     const { name, value } = e.target;
-    setRegistrationForm(prev => ({
+    setRegistrationForms(prev => ({
       ...prev,
-      [name]: value
+      [eventId]: {
+        ...prev[eventId],
+        [name]: value
+      }
     }));
   };
 
@@ -67,32 +77,34 @@ function Login({ onLogin }) {
       const response = await registerForEvent({
         event_id: eventId,
         is_new_registration: true,
-        ...registrationForm
+        ...registrationForms[eventId]
       });
       
-      if (response.data.success) {
-        setEventMessage({ 
-          type: 'success', 
-          text: 'Successfully registered for this event! You will receive a confirmation email shortly.' 
-        });
-        
-        // Refresh events list
-        const eventsResponse = await getEvents();
-        setEvents(eventsResponse.data);
-        
-        // Reset form
-        setRegistrationForm({
+      // API returns the response directly, not wrapped in response.data
+      setEventMessage({ 
+        type: 'success', 
+        text: 'Successfully registered for this event! You will receive a confirmation email shortly.' 
+      });
+      
+      // Refresh events list
+      const eventsResponse = await getEvents();
+      setEvents(eventsResponse.data);
+      
+      // Reset form for this specific event
+      setRegistrationForms(prev => ({
+        ...prev,
+        [eventId]: {
           first_name: '',
           last_name: '',
           phone: '',
           email: ''
-        });
+        }
+      }));
 
-        // Clear success message after 5 seconds
-        setTimeout(() => {
-          setEventMessage({ type: '', text: '' });
-        }, 5000);
-      }
+      // Clear success message after 5 seconds
+      setTimeout(() => {
+        setEventMessage({ type: '', text: '' });
+      }, 5000);
     } catch (error) {
       console.error('Error registering for event:', error);
       setEventMessage({ 
@@ -182,8 +194,8 @@ function Login({ onLogin }) {
                     <input
                       type="text"
                       name="first_name"
-                      value={registrationForm.first_name}
-                      onChange={handleRegistrationChange}
+                      value={registrationForms[event.EventID]?.first_name || ''}
+                      onChange={(e) => handleRegistrationChange(event.EventID, e)}
                       required
                     />
                   </div>
@@ -192,8 +204,8 @@ function Login({ onLogin }) {
                     <input
                       type="text"
                       name="last_name"
-                      value={registrationForm.last_name}
-                      onChange={handleRegistrationChange}
+                      value={registrationForms[event.EventID]?.last_name || ''}
+                      onChange={(e) => handleRegistrationChange(event.EventID, e)}
                       required
                     />
                   </div>
@@ -202,8 +214,8 @@ function Login({ onLogin }) {
                     <input
                       type="tel"
                       name="phone"
-                      value={registrationForm.phone}
-                      onChange={handleRegistrationChange}
+                      value={registrationForms[event.EventID]?.phone || ''}
+                      onChange={(e) => handleRegistrationChange(event.EventID, e)}
                       required
                     />
                   </div>
@@ -212,8 +224,8 @@ function Login({ onLogin }) {
                     <input
                       type="email"
                       name="email"
-                      value={registrationForm.email}
-                      onChange={handleRegistrationChange}
+                      value={registrationForms[event.EventID]?.email || ''}
+                      onChange={(e) => handleRegistrationChange(event.EventID, e)}
                       required
                     />
                   </div>

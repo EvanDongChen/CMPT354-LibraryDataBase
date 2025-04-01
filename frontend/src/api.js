@@ -103,10 +103,19 @@ export const getEvents = (peopleId) => api.get(`/api/events${peopleId ? `?people
 
 export const registerForEvent = async (eventData) => {
   try {
-    const response = await api.post('/api/events/register', eventData);
-    return response.data;
+    return await api.post('/api/events/register', eventData);
   } catch (error) {
-    throw new Error(error.response?.data?.error || 'Failed to register for event');
+    console.error('=== API Error Debug ===');
+    console.error('Error Message:', error.message);
+    console.error('Error Response:', error.response);
+    console.error('Error Request:', error.request);
+    console.error('Error Config:', error.config);
+    if (error.response) {
+      console.error('Error Response Data:', error.response.data);
+      console.error('Error Response Status:', error.response.status);
+      console.error('Error Response Headers:', error.response.headers);
+    }
+    throw error;
   }
 };
 
