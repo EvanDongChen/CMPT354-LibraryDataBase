@@ -126,12 +126,22 @@ function Login({ onLogin }) {
         <button 
           className={`tab-button ${activeTab === 'login' ? 'active' : ''}`}
           onClick={() => setActiveTab('login')}
+          style={{ 
+            backgroundColor: activeTab === 'login' ? '#8fa6ac' : '#4f583d',
+            color: 'white',
+            fontFamily: 'Times New Roman, Times, serif'
+          }}
         >
           Member Login
         </button>
         <button 
           className={`tab-button ${activeTab === 'events' ? 'active' : ''}`}
           onClick={() => setActiveTab('events')}
+          style={{ 
+            backgroundColor: activeTab === 'events' ? '#8fa6ac' : '#4f583d',
+            color: 'white',
+            fontFamily: 'Times New Roman, Times, serif'
+          }}
         >
           Events
         </button>
