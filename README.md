@@ -25,6 +25,11 @@ This project was created for **CMPT 354 - Spring 2025** under the guidance of **
    ```sh
    cd CMPT354-LibraryDataBase/backend
    ```
+   or if you already have the project open in the terminal<br>
+   
+    ```sh
+   cd backend
+   ```
 2. Create and activate a virtual environment:
    ```sh
    python -m venv venv
@@ -59,6 +64,10 @@ This project was created for **CMPT 354 - Spring 2025** under the guidance of **
 1. Open a new terminal window and navigate to the frontend folder:
    ```sh
    cd CMPT354-LibraryDataBase/frontend
+   ```
+   or if you already have the project open in the terminal<br>
+    ```sh
+   cd backend
    ```
 2. Install dependencies:
    ```sh
