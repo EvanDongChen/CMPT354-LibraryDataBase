@@ -37,24 +37,21 @@ function Home() {
     const userData = localStorage.getItem('user');
     if (userData) {
       setUser(JSON.parse(userData));
-      console.log('User data loaded:', JSON.parse(userData));
     }
 
     // Fetch all items on initial load
     const fetchData = async () => {
       try {
-        console.log('Fetching data with user ID:', user?.people_id);
         const [itemsRes, eventsRes, volunteersRes] = await Promise.all([
           getItems(),
           getEvents(user?.people_id),
           getVolunteers()
         ]);
         setItems(itemsRes.data);
-        console.log('Events data received:', eventsRes.data);
         setEvents(eventsRes.data);
         setVolunteers(volunteersRes.data);
       } catch (err) {
-        console.error('Error fetching data:', err);
+        // Silent fail
       }
     };
     fetchData();
@@ -74,7 +71,7 @@ function Home() {
         const res = await getEmployees();
         setEmployees(res.data);
       } catch (err) {
-        console.error('Error fetching employees:', err);
+        // Silent fail
       }
     };
 
@@ -85,7 +82,7 @@ function Home() {
           const res = await getQuestions(user.people_id);
           setQuestions(res.data);
         } catch (err) {
-          console.error('Error fetching questions:', err);
+          // Silent fail
         }
       }
     };
@@ -104,7 +101,7 @@ function Home() {
       const res = await searchItems(searchQuery);
       setSearchResults(res.data);
     } catch (err) {
-      console.error('Error searching items:', err);
+      // Silent fail
     }
   };
 
@@ -259,32 +256,26 @@ function Home() {
         const res = await getEvents();
         setEvents(res.data);
       } catch (error) {
-        console.error('Error registering for event:', error);
         setEventMessage({ type: 'error', text: error.response?.data?.error || 'Failed to register for event' });
       }
       return;
     }
 
     try {
-      console.log('Attempting to register for event:', eventId, 'with user:', user.people_id);
       await registerForEvent({
         event_id: eventId,
         people_id: user.people_id
       });
-      console.log('Successfully registered for event');
       setEventMessage({ type: 'success', text: 'Successfully registered for event!' });
       
       // Refresh events list with updated registration status
-      console.log('Refreshing events list...');
       const res = await getEvents(user.people_id);
-      console.log('Updated events data:', res.data);
       setEvents(res.data);
 
       setTimeout(() => {
         setEventMessage({ type: '', text: '' });
       }, 3000);
     } catch (error) {
-      console.error('Error registering for event:', error);
       if (error.response?.data?.error === 'Already registered for this event') {
         setEventMessage({ type: 'success', text: 'Already registered for this event!' });
         const res = await getEvents(user.people_id);
@@ -344,7 +335,6 @@ function Home() {
     
     try {
       const response = await registerVolunteer(user.people_id, volunteerForm.role);
-      console.log("Volunteer registration response:", response);
       
       if (response.data.success) {
         setVolunteerMessage({
@@ -361,7 +351,6 @@ function Home() {
         }, 5000);
       }
     } catch (error) {
-      console.error("Error registering volunteer:", error);
       setVolunteerMessage({
         type: 'error',
         text: error.response?.data?.error || 'Failed to register as a volunteer. Please try again.'

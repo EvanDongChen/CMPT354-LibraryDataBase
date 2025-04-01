@@ -2,8 +2,6 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
-console.log('Initializing API with URL:', API_URL);
-
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -13,47 +11,6 @@ const api = axios.create({
   withCredentials: true,
   credentials: 'include'
 });
-
-// Add request interceptor for debugging
-api.interceptors.request.use(
-  (config) => {
-    console.log('=== API Request Debug ===');
-    console.log('Request URL:', config.url);
-    console.log('Request Method:', config.method);
-    console.log('Request Headers:', config.headers);
-    console.log('Request Data:', config.data);
-    console.log('Request Config:', config);
-    return config;
-  },
-  (error) => {
-    console.error('Request Error:', error);
-    return Promise.reject(error);
-  }
-);
-
-// Add response interceptor for debugging
-api.interceptors.response.use(
-  (response) => {
-    console.log('=== API Response Debug ===');
-    console.log('Response Status:', response.status);
-    console.log('Response Headers:', response.headers);
-    console.log('Response Data:', response.data);
-    return response;
-  },
-  (error) => {
-    console.error('=== API Error Debug ===');
-    console.error('Error Message:', error.message);
-    console.error('Error Response:', error.response);
-    console.error('Error Request:', error.request);
-    console.error('Error Config:', error.config);
-    if (error.response) {
-      console.error('Error Response Data:', error.response.data);
-      console.error('Error Response Status:', error.response.status);
-      console.error('Error Response Headers:', error.response.headers);
-    }
-    return Promise.reject(error);
-  }
-);
 
 export const getItems = () => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -105,16 +62,6 @@ export const registerForEvent = async (eventData) => {
   try {
     return await api.post('/api/events/register', eventData);
   } catch (error) {
-    console.error('=== API Error Debug ===');
-    console.error('Error Message:', error.message);
-    console.error('Error Response:', error.response);
-    console.error('Error Request:', error.request);
-    console.error('Error Config:', error.config);
-    if (error.response) {
-      console.error('Error Response Data:', error.response.data);
-      console.error('Error Response Status:', error.response.status);
-      console.error('Error Response Headers:', error.response.headers);
-    }
     throw error;
   }
 };
@@ -135,7 +82,6 @@ export const createQuestion = (people_id, question) => {
 };
 
 export const register = (userData) => {
-  console.log('Registering user with data:', userData);
   return api.post('/api/register', userData, {
     headers: {
       'Content-Type': 'application/json',
@@ -148,38 +94,16 @@ export const register = (userData) => {
 
 export const registerVolunteer = async (peopleId, role) => {
   try {
-    const response = await api.post('/api/volunteer/register', { people_id: peopleId, role });
-    return response;
+    return await api.post('/api/volunteer/register', { people_id: peopleId, role });
   } catch (error) {
-    console.error('=== API Error Debug ===');
-    console.error('Error Message:', error.message);
-    console.error('Error Response:', error.response);
-    console.error('Error Request:', error.request);
-    console.error('Error Config:', error.config);
-    if (error.response) {
-      console.error('Error Response Data:', error.response.data);
-      console.error('Error Response Status:', error.response.status);
-      console.error('Error Response Headers:', error.response.headers);
-    }
     throw error;
   }
 };
 
 export const getVolunteers = async () => {
   try {
-    const response = await api.get('/api/volunteers');
-    return response;
+    return await api.get('/api/volunteers');
   } catch (error) {
-    console.error('=== API Error Debug ===');
-    console.error('Error Message:', error.message);
-    console.error('Error Response:', error.response);
-    console.error('Error Request:', error.request);
-    console.error('Error Config:', error.config);
-    if (error.response) {
-      console.error('Error Response Data:', error.response.data);
-      console.error('Error Response Status:', error.response.status);
-      console.error('Error Response Headers:', error.response.headers);
-    }
     throw error;
   }
 };

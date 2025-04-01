@@ -32,7 +32,7 @@ function Login({ onLogin }) {
         });
         setRegistrationForms(initialForms);
       } catch (err) {
-        console.error('Error fetching events:', err);
+        // Silent fail - events will be empty array
       }
     };
     fetchEvents();
@@ -74,7 +74,7 @@ function Login({ onLogin }) {
 
   const handleEventRegistration = async (eventId) => {
     try {
-      const response = await registerForEvent({
+      await registerForEvent({
         event_id: eventId,
         is_new_registration: true,
         ...registrationForms[eventId]
@@ -106,7 +106,6 @@ function Login({ onLogin }) {
         setEventMessage({ type: '', text: '' });
       }, 5000);
     } catch (error) {
-      console.error('Error registering for event:', error);
       setEventMessage({ 
         type: 'error', 
         text: error.response?.data?.error || 'Failed to register for event. Please try again.' 

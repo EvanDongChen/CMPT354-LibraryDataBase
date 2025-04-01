@@ -496,7 +496,6 @@ def register_for_event():
     if request.method == 'OPTIONS':
         return jsonify({}), 200
 
-    print(f"Event registration data: {request.json}")
     data = request.json
     
     # Handle new registrations (people who aren't in the system yet)
@@ -521,14 +520,12 @@ def register_for_event():
                 
                 # Now use this new person's ID for the event registration
                 data['people_id'] = person.PeopleID
-                print(f"Created new person with ID: {person.PeopleID}")
             except Exception as e:
                 db.session.rollback()
                 return jsonify({'error': f"Error creating new person: {str(e)}"}), 500
         else:
             # Person already exists, use their ID
             data['people_id'] = person.PeopleID
-            print(f"Using existing person with ID: {person.PeopleID}")
     
     # Now proceed with the regular event registration
     if 'event_id' not in data or 'people_id' not in data:
@@ -634,25 +631,21 @@ def register_volunteer():
         return jsonify({}), 200
 
     data = request.json
-    print(f"Processing volunteer registration data: {data}")
     
     required_fields = ['people_id', 'role']
     
     # Check if all required fields are present
     if not all(field in data for field in required_fields):
         missing_fields = [field for field in required_fields if field not in data]
-        print(f"Missing required fields: {missing_fields}")
         return jsonify({'error': f'Missing required fields: {", ".join(missing_fields)}'}), 400
     
     # Check if person exists
     person = People.query.get(data['people_id'])
     if not person:
-        print(f"Person not found with ID: {data['people_id']}")
         return jsonify({'error': 'Person not found'}), 404
     
     # Check if person is already an employee (volunteer)
     if person.employee:
-        print(f"Person is already an employee/volunteer: {data['people_id']}")
         return jsonify({'error': 'Already registered as a volunteer'}), 400
     
     try:
@@ -664,7 +657,6 @@ def register_volunteer():
         )
         db.session.add(new_volunteer)
         db.session.commit()
-        print(f"Successfully created volunteer record with ID: {new_volunteer.EmployeeID}")
         
         return jsonify({
             'message': 'Volunteer registration successful',
@@ -673,7 +665,6 @@ def register_volunteer():
         }), 201
         
     except Exception as e:
-        print(f"Error during volunteer registration: {str(e)}")
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
