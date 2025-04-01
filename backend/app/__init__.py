@@ -15,14 +15,18 @@ def create_app():
     # Initialize extensions
     db.init_app(app)
 
-    # Configure CORS
+    # Configure CORS - simplified to prevent duplicate headers
     CORS(app, 
-         resources={r"/*": {
-             "origins": ["http://localhost:3000"],
-             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-             "allow_headers": ["Content-Type", "Authorization"],
-             "supports_credentials": True
-         }})
+         resources={
+             r"/*": {
+                 "origins": "http://localhost:3000",
+                 "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+                 "allow_headers": ["Content-Type", "Authorization"],
+                 "supports_credentials": True,
+                 "expose_headers": ["Content-Type", "Authorization"],
+                 "max_age": 600
+             }
+         })
 
     # Register blueprints
     app.register_blueprint(api_bp)

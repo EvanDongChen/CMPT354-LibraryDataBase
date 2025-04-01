@@ -13,6 +13,7 @@ class People(db.Model):
     # Relationships
     member = db.relationship('Member', back_populates='person', uselist=False)
     employee = db.relationship('Employee', back_populates='person', uselist=False)
+    volunteer = db.relationship('Volunteer', back_populates='person', uselist=False)
     signups = db.relationship('SignUp', back_populates='person')
     requests = db.relationship('Request', back_populates='person')
 
@@ -83,22 +84,12 @@ class Item(db.Model):
     Status = db.Column(db.String(20), nullable=False)
     PublicationYear = db.Column(db.Integer)
     Author = db.Column(db.String(100))
-    Type = db.Column(db.String(20), nullable=False)  # Digital or Physical
+    Type = db.Column(db.String(50), nullable=False)  # Book, Magazine, Journal, CD, Record, etc.
     
     # Relationships
     digital_item = db.relationship('DigitalItem', back_populates='item', uselist=False)
     physical_item = db.relationship('PhysicalItem', back_populates='item', uselist=False)
     transactions = db.relationship('BorrowingTransaction', back_populates='item')
-
-    def serialize(self):
-        return {
-            'ItemID': self.ItemID,
-            'Title': self.Title,
-            'Status': self.Status,
-            'PublicationYear': self.PublicationYear,
-            'Author': self.Author,
-            'Type': self.Type
-        }
 
 class DigitalItem(db.Model):
     __tablename__ = 'DigitalItem'
@@ -213,3 +204,15 @@ class IsDue(db.Model):
     
     FineID = db.Column(db.Integer, db.ForeignKey('Fine.FineID'), primary_key=True)
     TransactionID = db.Column(db.Integer, db.ForeignKey('BorrowingTransaction.TransactionID'), primary_key=True)
+
+class Volunteer(db.Model):
+    __tablename__ = 'Volunteer'
+    
+    VolunteerID = db.Column(db.Integer, primary_key=True)
+    PeopleID = db.Column(db.Integer, db.ForeignKey('People.PeopleID'), unique=True)
+    JoinDate = db.Column(db.Date, nullable=False)
+    Status = db.Column(db.String(20), nullable=False)  # Active, Inactive
+    Role = db.Column(db.String(100), nullable=False)  # e.g., "Book Shelver", "Event Helper"
+    
+    # Relationships
+    person = db.relationship('People', back_populates='volunteer')

@@ -1,91 +1,104 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { signup } from '../api';
+import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../api';
 
-function SignUp() {
-  const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    phone: '',
-    email: ''
-  });
-  const [error, setError] = useState('');
+function Signup() {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    email: '',
+    wantsToBecomeMember: false
+  });
+  const [message, setMessage] = useState({ type: '', text: '' });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    
     try {
-      const response = await signup(formData);
-      if (response.data.success) {
-        // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(response.data));
-        // Redirect to home page
-        navigate('/home');
-      } else {
-        setError('Sign up failed. Please try again.');
-      }
+      const response = await registerUser(formData);
+      setMessage({ type: 'success', text: 'Registration successful!' });
+      localStorage.setItem('user', JSON.stringify(response.data));
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
     } catch (error) {
-      console.error('Sign up error:', error);
-      setError('An error occurred during sign up. Please try again.');
+      setMessage({ type: 'error', text: error.message || 'Registration failed' });
     }
   };
 
   return (
-    <div className="login-container">
-      <div className="login-header">
-        <img 
-          src="/images/library-logo.png" 
-          alt="Library Logo" 
-          className="login-logo"
-        />
-      </div>
-      {error && <div className="error-message">{error}</div>}
+    <div className="signup-container">
+      <h2>Sign Up</h2>
+      {message.text && (
+        <div className={`message ${message.type}`}>
+          {message.text}
+        </div>
+      )}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>First Name</label>
+          <label>First Name:</label>
           <input
             type="text"
-            value={formData.first_name}
-            onChange={(e) => setFormData({...formData, first_name: e.target.value})}
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
             required
           />
         </div>
         <div className="form-group">
-          <label>Last Name</label>
+          <label>Last Name:</label>
           <input
             type="text"
-            value={formData.last_name}
-            onChange={(e) => setFormData({...formData, last_name: e.target.value})}
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
             required
           />
         </div>
         <div className="form-group">
-          <label>Phone Number</label>
+          <label>Phone:</label>
           <input
-            type="text"
+            type="tel"
+            name="phone"
             value={formData.phone}
-            onChange={(e) => setFormData({...formData, phone: e.target.value})}
+            onChange={handleChange}
             required
           />
         </div>
         <div className="form-group">
-          <label>Email</label>
+          <label>Email:</label>
           <input
             type="email"
+            name="email"
             value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            onChange={handleChange}
             required
           />
+        </div>
+        <div className="form-group">
+          <label>
+            <input
+              type="checkbox"
+              name="wantsToBecomeMember"
+              checked={formData.wantsToBecomeMember}
+              onChange={handleChange}
+            />
+            I want to become a library member (required to borrow items)
+          </label>
         </div>
         <button type="submit">Sign Up</button>
       </form>
-      <div className="form-footer">
-        Already have an account? <Link to="/login">Login here</Link>
-      </div>
     </div>
   );
 }
 
-export default SignUp; 
+export default Signup; 
