@@ -161,6 +161,7 @@ function Login({ onLogin }) {
                 onChange={handleChange}
                 placeholder="Enter your Member ID"
                 required
+                style={{ fontFamily: 'Times New Roman, Times, serif' }}
               />
             </div>
             <div className="form-group">
@@ -172,6 +173,7 @@ function Login({ onLogin }) {
                 onChange={handleChange}
                 placeholder="Enter your phone number"
                 required
+                style={{ fontFamily: 'Times New Roman, Times, serif' }}
               />
             </div>
             <button type="submit">Login</button>
