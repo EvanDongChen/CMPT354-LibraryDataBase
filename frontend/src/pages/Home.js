@@ -567,8 +567,8 @@ function Home() {
             )}
             <div className="events-list">
               {events.map((event) => (
-                <div key={event.EventID} className="event-card">
-                  <h3>{event.EventName}</h3>
+                <div key={event.EventID} className="event-card" style={{ fontFamily: 'Times New Roman, Times, serif' }}>
+                  <h3 style={{ color: '#4f583d' }}>{event.EventName}</h3>
                   <p><strong>Type:</strong> {event.Type}</p>
                   <p><strong>Date:</strong> {new Date(event.EventDate).toLocaleString()}</p>
                   <p><strong>Location:</strong> {event.Location}</p>
@@ -579,6 +579,11 @@ function Home() {
                       onClick={() => handleEventRegistration(event.EventID)}
                       className={`register-button ${event.IsRegistered ? 'registered' : ''}`}
                       disabled={event.IsRegistered}
+                      style={{ 
+                        backgroundColor: event.IsRegistered ? '#8fa6ac' : '#4f583d',
+                        color: 'white',
+                        fontFamily: 'Times New Roman, Times, serif'
+                      }}
                     >
                       {event.IsRegistered ? 'Already Registered' : 'Register'}
                     </button>
@@ -586,6 +591,11 @@ function Home() {
                     <button
                       onClick={() => alert('Please log in to register for events')}
                       className="register-button"
+                      style={{ 
+                        backgroundColor: '#4f583d',
+                        color: 'white',
+                        fontFamily: 'Times New Roman, Times, serif'
+                      }}
                     >
                       Register
                     </button>
