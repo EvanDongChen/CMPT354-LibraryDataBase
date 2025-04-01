@@ -120,15 +120,20 @@ def get_items():
 def search_items():
     query = request.args.get('q', '')
     member_id = request.args.get('member_id')
-    print(f"\nSearching items for query: {query}, member_id: {member_id}")
     
     if not query:
         # Return all items if search query is empty
         items = Item.query.options(db.joinedload(Item.transactions)).all()
     else:
-        # Search in title only
-        items = Item.query.options(db.joinedload(Item.transactions)).filter(Item.Title.ilike(f'%{query}%')).all()
+        # Search in title and author
+        items = Item.query.options(db.joinedload(Item.transactions)).filter(
+            db.or_(
+                Item.Title.ilike(f'%{query}%'),
+                Item.Author.ilike(f'%{query}%')
+            )
+        ).all()
     
+    items_data = []
     for item in items:
         # Get the most recent active transaction for this item
         active_transaction = None
@@ -137,6 +142,26 @@ def search_items():
                 (t for t in item.transactions if t.ReturnDate is None),
                 None
             )
+        
+        # Update item status based on active transaction
+        current_status = 'CheckedOut' if active_transaction else 'Available'
+        if item.Status != current_status:
+            item.Status = current_status
+            db.session.commit()
+        
+        item_data = {
+            'ItemID': item.ItemID,
+            'Title': item.Title,
+            'Status': item.Status,
+            'PublicationYear': item.PublicationYear,
+            'Author': item.Author,
+            'Type': item.Type,
+            'DueDate': active_transaction.DueDate.strftime('%Y-%m-%d') if active_transaction else None,
+            'CanReturn': bool(member_id and active_transaction and str(active_transaction.MemberID) == str(member_id))
+        }
+        items_data.append(item_data)
+    
+    return jsonify(items_data)
 
 @api_bp.route('/api/items/borrow', methods=['POST', 'OPTIONS'])
 def borrow_item():

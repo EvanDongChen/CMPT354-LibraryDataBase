@@ -81,6 +81,7 @@ def populate_data():
 
     items = [
         Item(ItemID=1, Title="The Great Adventure", Status="Available", PublicationYear=2020, Author="Author A", Type="Book"),
+        Item(ItemID=7, Title="The Great Test", Status="Available", PublicationYear=2020, Author="Author A", Type="Book"),
         Item(ItemID=2, Title="Digital World", Status="Available", PublicationYear=2021, Author="Author B", Type="Book"),
         Item(ItemID=3, Title="Science Today", Status="Available", PublicationYear=2019, Author="Author C", Type="Magazine"),
         Item(ItemID=4, Title="Nature Journal", Status="Available", PublicationYear=2022, Author="Various", Type="Scientific Journal"),
