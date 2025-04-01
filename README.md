@@ -1,6 +1,6 @@
 # Evan and Emmy's Library Database - Library DB
 
-This project was created for **CMPT 354 - Spring 2025** under the guidance of **Dr. Eugenia Ternovska**, Associate Professor at SFU.
+This project was created for **CMPT 354 - Spring 2025** Taught By **Dr. Eugenia Ternovska**, Associate Professor at SFU.
 
 ## Table of Contents
 - [Setup Instructions](#setup-instructions)
