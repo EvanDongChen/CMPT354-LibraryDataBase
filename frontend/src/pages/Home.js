@@ -438,11 +438,11 @@ function Home() {
                 {returnMessage.text}
               </div>
             )}
-            <div className="borrowed-items">
+            <div className="borrowed-items" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
               <h3>Your Borrowed Items</h3>
               {console.log('All items:', items)}
               {console.log('Checked out items:', items.filter(item => item.Status === 'CheckedOut' && item.CanReturn))}
-              <ul>
+              <ul style={{ width: '100%', maxWidth: '800px', margin: '0 auto', padding: '0' }}>
                 {items.filter(item => item.Status === 'CheckedOut' && item.CanReturn).map(item => (
                   <li key={item.ItemID} className="item-card">
                     <div className="content-wrapper">
