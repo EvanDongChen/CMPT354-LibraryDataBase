@@ -546,7 +546,7 @@ function Home() {
                 type="submit" 
                 className="submit-button" 
                 style={{ 
-                  backgroundColor: '#006400', 
+                  backgroundColor: '#4f583d', 
                   color: 'white',
                   fontFamily: 'Times New Roman, Times, serif'
                 }}
@@ -721,7 +721,7 @@ function Home() {
                   type="submit" 
                   className="submit-button" 
                   style={{ 
-                    backgroundColor: '#006400', 
+                    backgroundColor: '#4f583d', 
                     color: 'white',
                     fontFamily: 'Times New Roman, Times, serif'
                   }}
@@ -739,7 +739,7 @@ function Home() {
                 <ul className="volunteer-cards">
                   {volunteers.map(volunteer => (
                     <li key={volunteer.volunteer_id} className="volunteer-card">
-                      <h4 style={{ color: '#006400' }}>{volunteer.name}</h4>
+                      <h4 style={{ color: '#4f583d' }}>{volunteer.name}</h4>
                       <p><strong>Role:</strong> {volunteer.role}</p>
                       <p><strong>Contact:</strong> {volunteer.email}</p>
                     </li>
