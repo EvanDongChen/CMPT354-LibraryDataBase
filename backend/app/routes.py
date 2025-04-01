@@ -85,7 +85,7 @@ def get_items():
     print(f"\nFetching items for member_id: {member_id}")
     
     items = Item.query.options(db.joinedload(Item.transactions)).all()
-    serialized_items = []
+    items_data = []
     
     for item in items:
         # Get the most recent active transaction for this item
@@ -112,10 +112,9 @@ def get_items():
             'DueDate': active_transaction.DueDate.strftime('%Y-%m-%d') if active_transaction else None,
             'CanReturn': bool(member_id and active_transaction and str(active_transaction.MemberID) == str(member_id))
         }
-        serialized_items.append(item_data)
+        items_data.append(item_data)
     
-    print(f"Returning {len(serialized_items)} items")
-    return jsonify(serialized_items)
+    return jsonify(items_data)
 
 @api_bp.route('/api/items/search', methods=['GET'])
 def search_items():
@@ -130,7 +129,6 @@ def search_items():
         # Search in title only
         items = Item.query.options(db.joinedload(Item.transactions)).filter(Item.Title.ilike(f'%{query}%')).all()
     
-    serialized_items = []
     for item in items:
         # Get the most recent active transaction for this item
         active_transaction = None
@@ -139,21 +137,6 @@ def search_items():
                 (t for t in item.transactions if t.ReturnDate is None),
                 None
             )
-        
-        item_data = {
-            'ItemID': item.ItemID,
-            'Title': item.Title,
-            'Status': item.Status,
-            'PublicationYear': item.PublicationYear,
-            'Author': item.Author,
-            'Type': item.Type,
-            'DueDate': active_transaction.DueDate.strftime('%Y-%m-%d') if active_transaction else None,
-            'CanReturn': bool(member_id and active_transaction and str(active_transaction.MemberID) == str(member_id))
-        }
-        serialized_items.append(item_data)
-    
-    print(f"Returning {len(serialized_items)} items from search")
-    return jsonify(serialized_items)
 
 @api_bp.route('/api/items/borrow', methods=['POST', 'OPTIONS'])
 def borrow_item():
@@ -371,13 +354,6 @@ def donate_item():
         
         db.session.commit()
         
-        response = jsonify({
-            'message': 'Item donation submitted successfully. Library staff will process your donation.',
-            'item': new_item.serialize()
-        })
-        response.headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
-        response.headers.add('Access-Control-Allow-Credentials', 'true')
-        return response
     except Exception as e:
         db.session.rollback()
         error_response = jsonify({'error': str(e)}), 500
@@ -515,13 +491,47 @@ def register():
         return jsonify({'error': str(e)}), 500
 
 @api_bp.route('/api/events/register', methods=['POST', 'OPTIONS'])
-@cross_origin()
+@cross_origin(supports_credentials=True)
 def register_for_event():
     if request.method == 'OPTIONS':
-        return jsonify({'message': 'OK'}), 200
+        return jsonify({}), 200
 
+    print(f"Event registration data: {request.json}")
     data = request.json
-    if not data or 'event_id' not in data or 'people_id' not in data:
+    
+    # Handle new registrations (people who aren't in the system yet)
+    if 'is_new_registration' in data and data['is_new_registration']:
+        required_fields = ['event_id', 'first_name', 'last_name', 'phone', 'email']
+        if not all(field in data for field in required_fields):
+            return jsonify({'error': 'Missing required fields for new registration'}), 400
+            
+        # Check if person already exists with this phone number
+        person = People.query.filter_by(Phone=data['phone']).first()
+        if not person:
+            # Create new person
+            try:
+                person = People(
+                    FirstName=data['first_name'],
+                    LastName=data['last_name'],
+                    Phone=data['phone'],
+                    Email=data['email']
+                )
+                db.session.add(person)
+                db.session.flush()  # Get the PeopleID without committing
+                
+                # Now use this new person's ID for the event registration
+                data['people_id'] = person.PeopleID
+                print(f"Created new person with ID: {person.PeopleID}")
+            except Exception as e:
+                db.session.rollback()
+                return jsonify({'error': f"Error creating new person: {str(e)}"}), 500
+        else:
+            # Person already exists, use their ID
+            data['people_id'] = person.PeopleID
+            print(f"Using existing person with ID: {person.PeopleID}")
+    
+    # Now proceed with the regular event registration
+    if 'event_id' not in data or 'people_id' not in data:
         return jsonify({'error': 'Missing event_id or people_id'}), 400
 
     event_id = data['event_id']
@@ -531,34 +541,6 @@ def register_for_event():
     event = Event.query.get(event_id)
     if not event:
         return jsonify({'error': 'Event not found'}), 404
-
-    # Check if the person exists, if not create a new person record
-    person = None
-    if 'is_new_registration' in data and data['is_new_registration']:
-        required_fields = ['first_name', 'last_name', 'phone', 'email']
-        if not all(field in data for field in required_fields):
-            return jsonify({'error': 'Missing required fields for new registration'}), 400
-            
-        # Check if person already exists
-        person = People.query.filter_by(Phone=data['phone']).first()
-        if not person:
-            person = People(
-                FirstName=data['first_name'],
-                LastName=data['last_name'],
-                Phone=data['phone'],
-                Email=data['email']
-            )
-            db.session.add(person)
-            try:
-                db.session.flush()  # Get the PeopleID without committing
-                people_id = person.PeopleID
-            except Exception as e:
-                db.session.rollback()
-                return jsonify({'error': str(e)}), 500
-    else:
-        person = People.query.get(people_id)
-        if not person:
-            return jsonify({'error': 'Person not found'}), 404
 
     # Check if already registered
     existing_signup = SignUp.query.filter_by(
@@ -579,7 +561,11 @@ def register_for_event():
     db.session.add(signup)
     try:
         db.session.commit()
-        return jsonify({'message': 'Successfully registered for event'}), 201
+        return jsonify({
+            'message': 'Successfully registered for event',
+            'success': True,
+            'people_id': people_id
+        }), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
@@ -645,12 +631,7 @@ def create_question():
 @cross_origin(supports_credentials=True)
 def register_volunteer():
     if request.method == 'OPTIONS':
-        response = make_response()
-        response.headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-        response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
-        response.headers.add('Access-Control-Allow-Credentials', 'true')
-        return response
+        return jsonify({}), 200
 
     data = request.json
     print(f"Processing volunteer registration data: {data}")
@@ -661,55 +642,40 @@ def register_volunteer():
     if not all(field in data for field in required_fields):
         missing_fields = [field for field in required_fields if field not in data]
         print(f"Missing required fields: {missing_fields}")
-        response = jsonify({'error': f'Missing required fields: {", ".join(missing_fields)}'}), 400
-        response[0].headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
-        response[0].headers.add('Access-Control-Allow-Credentials', 'true')
-        return response
+        return jsonify({'error': f'Missing required fields: {", ".join(missing_fields)}'}), 400
     
     # Check if person exists
     person = People.query.get(data['people_id'])
     if not person:
         print(f"Person not found with ID: {data['people_id']}")
-        response = jsonify({'error': 'Person not found'}), 404
-        response[0].headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
-        response[0].headers.add('Access-Control-Allow-Credentials', 'true')
-        return response
+        return jsonify({'error': 'Person not found'}), 404
     
-    # Check if person is already a volunteer
-    if person.volunteer:
-        print(f"Person is already a volunteer: {data['people_id']}")
-        response = jsonify({'error': 'Already registered as a volunteer'}), 400
-        response[0].headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
-        response[0].headers.add('Access-Control-Allow-Credentials', 'true')
-        return response
+    # Check if person is already an employee (volunteer)
+    if person.employee:
+        print(f"Person is already an employee/volunteer: {data['people_id']}")
+        return jsonify({'error': 'Already registered as a volunteer'}), 400
     
     try:
-        # Create volunteer record
-        new_volunteer = Volunteer(
+        # Create employee record with volunteer position
+        new_volunteer = Employee(
             PeopleID=data['people_id'],
-            JoinDate=datetime.now().date(),
-            Status='Active',
-            Role=data['role']
+            Position=f"Volunteer - {data['role']}",
+            WagePerHour=0.0  # Volunteers don't get paid
         )
         db.session.add(new_volunteer)
         db.session.commit()
-        print(f"Successfully created volunteer record with ID: {new_volunteer.VolunteerID}")
+        print(f"Successfully created volunteer record with ID: {new_volunteer.EmployeeID}")
         
-        response = jsonify({
+        return jsonify({
             'message': 'Volunteer registration successful',
-            'volunteer_id': new_volunteer.VolunteerID
+            'volunteer_id': new_volunteer.EmployeeID,
+            'success': True
         }), 201
-        response[0].headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
-        response[0].headers.add('Access-Control-Allow-Credentials', 'true')
-        return response
         
     except Exception as e:
         print(f"Error during volunteer registration: {str(e)}")
         db.session.rollback()
-        response = jsonify({'error': str(e)}), 500
-        response[0].headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
-        response[0].headers.add('Access-Control-Allow-Credentials', 'true')
-        return response
+        return jsonify({'error': str(e)}), 500
 
 @api_bp.route('/api/volunteers', methods=['GET'])
 def get_volunteers():

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getItems, searchItems, borrowItem, returnItem, donateItem, getEvents, registerForEvent, getEmployees, getQuestions, createQuestion } from '../api';
+import { getItems, searchItems, borrowItem, returnItem, donateItem, getEvents, registerForEvent, getEmployees, getQuestions, createQuestion, registerVolunteer } from '../api';
 import { useLocation } from 'react-router-dom';
 
 function Home() {
@@ -25,6 +25,9 @@ function Home() {
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [newQuestion, setNewQuestion] = useState('');
   const [questionMessage, setQuestionMessage] = useState({ type: '', text: '' });
+  const [volunteerForm, setVolunteerForm] = useState({
+    role: ''
+  });
   const location = useLocation();
 
   useEffect(() => {
@@ -327,6 +330,42 @@ function Home() {
     }
   };
 
+  const handleVolunteerSubmit = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      setQuestionMessage({ type: 'error', text: 'Please log in to register as a volunteer' });
+      return;
+    }
+
+    try {
+      await registerVolunteer(user.people_id, volunteerForm.role);
+      setQuestionMessage({ type: 'success', text: 'Successfully registered as a volunteer!' });
+      
+      // Reset form
+      setVolunteerForm({
+        role: ''
+      });
+
+      // Clear message after 3 seconds
+      setTimeout(() => {
+        setQuestionMessage({ type: '', text: '' });
+      }, 3000);
+    } catch (error) {
+      setQuestionMessage({ type: 'error', text: error.response?.data?.error || 'Failed to register as volunteer' });
+      setTimeout(() => {
+        setQuestionMessage({ type: '', text: '' });
+      }, 3000);
+    }
+  };
+
+  const handleVolunteerFormChange = (e) => {
+    const { name, value } = e.target;
+    setVolunteerForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   return (
     <div className="home-container">
       {/* Navigation Bar */}
@@ -362,8 +401,8 @@ function Home() {
           Contact
         </button>
         <button 
-          className={`nav-button`}
-          onClick={() => window.location.href = '/volunteer'}
+          className={`nav-button ${activeSection === 'volunteer' ? 'active' : ''}`}
+          onClick={() => handleNavClick('volunteer')}
         >
           Volunteer
         </button>
@@ -628,6 +667,37 @@ function Home() {
                 <p>Please log in to ask questions and view your previous inquiries.</p>
               )}
             </div>
+          </div>
+        )}
+
+        {activeSection === 'volunteer' && (
+          <div className="section volunteer-section">
+            <h2>Volunteer</h2>
+            {!user ? (
+              <p>Please log in to register as a volunteer.</p>
+            ) : (
+              <div className="volunteer-form">
+                <h3>Register as a Volunteer</h3>
+                <form onSubmit={handleVolunteerSubmit}>
+                  <div className="form-group">
+                    <label>Role:</label>
+                    <select 
+                      name="role"
+                      value={volunteerForm.role}
+                      onChange={handleVolunteerFormChange}
+                      required
+                    >
+                      <option value="">Select a role</option>
+                      <option value="Book Shelver">Book Shelver</option>
+                      <option value="Event Helper">Event Helper</option>
+                      <option value="Program Assistant">Program Assistant</option>
+                      <option value="Technology Tutor">Technology Tutor</option>
+                    </select>
+                  </div>
+                  <button type="submit" className="submit-button">Register as Volunteer</button>
+                </form>
+              </div>
+            )}
           </div>
         )}
       </div>

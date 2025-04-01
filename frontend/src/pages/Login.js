@@ -1,14 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../api';
+import { login, getEvents, registerForEvent } from '../api';
 
 function Login({ onLogin }) {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('login');
   const [credentials, setCredentials] = useState({
     member_id: '',
     phone: ''
   });
   const [error, setError] = useState('');
+  const [events, setEvents] = useState([]);
+  const [eventMessage, setEventMessage] = useState({ type: '', text: '' });
+  const [registrationForm, setRegistrationForm] = useState({
+    first_name: '',
+    last_name: '',
+    phone: '',
+    email: ''
+  });
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await getEvents();
+        setEvents(response.data);
+      } catch (err) {
+        console.error('Error fetching events:', err);
+      }
+    };
+    fetchEvents();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,38 +54,178 @@ function Login({ onLogin }) {
     }));
   };
 
+  const handleRegistrationChange = (e) => {
+    const { name, value } = e.target;
+    setRegistrationForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleEventRegistration = async (eventId) => {
+    try {
+      const response = await registerForEvent({
+        event_id: eventId,
+        is_new_registration: true,
+        ...registrationForm
+      });
+      
+      if (response.data.success) {
+        setEventMessage({ 
+          type: 'success', 
+          text: 'Successfully registered for event! You will receive a confirmation email shortly.' 
+        });
+        
+        // Refresh events list
+        const eventsResponse = await getEvents();
+        setEvents(eventsResponse.data);
+        
+        // Reset form
+        setRegistrationForm({
+          first_name: '',
+          last_name: '',
+          phone: '',
+          email: ''
+        });
+
+        // Clear success message after 5 seconds
+        setTimeout(() => {
+          setEventMessage({ type: '', text: '' });
+        }, 5000);
+      }
+    } catch (error) {
+      setEventMessage({ 
+        type: 'error', 
+        text: error.response?.data?.error || 'Failed to register for event. Please try again.' 
+      });
+      setTimeout(() => {
+        setEventMessage({ type: '', text: '' });
+      }, 5000);
+    }
+  };
+
   return (
     <div className="login-container">
       <div className="login-header">
         <img src="/images/library-logo-ver2.png" alt="Library Logo" className="login-logo" />
       </div>
-      <h2>Member Login</h2>
-      {error && <div className="error-message">{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Member ID:</label>
-          <input
-            type="text"
-            name="member_id"
-            value={credentials.member_id}
-            onChange={handleChange}
-            placeholder="Enter your Member ID"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Phone Number:</label>
-          <input
-            type="text"
-            name="phone"
-            value={credentials.phone}
-            onChange={handleChange}
-            placeholder="Enter your phone number"
-            required
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
+      
+      <div className="tab-buttons">
+        <button 
+          className={`tab-button ${activeTab === 'login' ? 'active' : ''}`}
+          onClick={() => setActiveTab('login')}
+        >
+          Member Login
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'events' ? 'active' : ''}`}
+          onClick={() => setActiveTab('events')}
+        >
+          Events
+        </button>
+      </div>
+
+      {activeTab === 'login' ? (
+        <>
+          <h2>Member Login</h2>
+          {error && <div className="error-message">{error}</div>}
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Member ID:</label>
+              <input
+                type="text"
+                name="member_id"
+                value={credentials.member_id}
+                onChange={handleChange}
+                placeholder="Enter your Member ID"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Phone Number:</label>
+              <input
+                type="text"
+                name="phone"
+                value={credentials.phone}
+                onChange={handleChange}
+                placeholder="Enter your phone number"
+                required
+              />
+            </div>
+            <button type="submit">Login</button>
+          </form>
+        </>
+      ) : (
+        <>
+          <h2>Library Events</h2>
+          {eventMessage.text && (
+            <div className={`message ${eventMessage.type}`}>
+              {eventMessage.text}
+            </div>
+          )}
+          <div className="events-list">
+            {events.map((event) => (
+              <div key={event.EventID} className="event-card">
+                <h3>{event.EventName}</h3>
+                <p><strong>Type:</strong> {event.Type}</p>
+                <p><strong>Date:</strong> {new Date(event.EventDate).toLocaleString()}</p>
+                <p><strong>Location:</strong> {event.Location}</p>
+                <p><strong>Capacity:</strong> {event.Capacity}</p>
+                <p><strong>Audience:</strong> {event.Audience}</p>
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  handleEventRegistration(event.EventID);
+                }}>
+                  <div className="form-group">
+                    <label>First Name:</label>
+                    <input
+                      type="text"
+                      name="first_name"
+                      value={registrationForm.first_name}
+                      onChange={handleRegistrationChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Last Name:</label>
+                    <input
+                      type="text"
+                      name="last_name"
+                      value={registrationForm.last_name}
+                      onChange={handleRegistrationChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Phone:</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={registrationForm.phone}
+                      onChange={handleRegistrationChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Email:</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={registrationForm.email}
+                      onChange={handleRegistrationChange}
+                      required
+                    />
+                  </div>
+                  <button type="submit" className="register-button">Register for Event</button>
+                </form>
+              </div>
+            ))}
+            {events.length === 0 && (
+              <p>No upcoming events at the moment.</p>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

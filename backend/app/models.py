@@ -91,32 +91,6 @@ class Item(db.Model):
     physical_item = db.relationship('PhysicalItem', back_populates='item', uselist=False)
     transactions = db.relationship('BorrowingTransaction', back_populates='item')
 
-    def serialize(self):
-        print(f"\nSerializing Item {self.ItemID} - {self.Title}")
-        print(f"Status: {self.Status}")
-        print(f"Number of transactions: {len(self.transactions) if self.transactions else 0}")
-        
-        # Get the most recent active transaction for this item
-        active_transaction = None
-        if self.transactions:
-            active_transaction = next(
-                (t for t in self.transactions if t.ReturnDate is None),
-                None
-            )
-            print(f"Active transaction found: {active_transaction is not None}")
-            if active_transaction:
-                print(f"Due Date: {active_transaction.DueDate}")
-        
-        return {
-            'ItemID': self.ItemID,
-            'Title': self.Title,
-            'Status': self.Status,
-            'PublicationYear': self.PublicationYear,
-            'Author': self.Author,
-            'Type': self.Type,
-            'DueDate': active_transaction.DueDate.strftime('%Y-%m-%d') if active_transaction else None
-        }
-
 class DigitalItem(db.Model):
     __tablename__ = 'DigitalItem'
     

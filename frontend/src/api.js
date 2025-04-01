@@ -137,12 +137,15 @@ export const register = (userData) => {
   });
 };
 
-export const registerVolunteer = async (volunteerData) => {
+export const registerVolunteer = async (peopleId, role) => {
   try {
-    const response = await api.post('/api/volunteer/register', volunteerData);
-    return response.data;
+    return await api.post('/api/volunteer/register', {
+      people_id: peopleId,
+      role: role
+    });
   } catch (error) {
-    throw new Error(error.response?.data?.error || 'Failed to register as volunteer');
+    console.error('Error registering as volunteer:', error);
+    throw error;
   }
 };
 

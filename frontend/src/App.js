@@ -2,12 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom';
 import Login from './pages/Login';
 import Home from './pages/Home';
-import Test from './pages/Test';
 import SignUp from './components/SignUp';
 import { logout, searchItems } from './api';
 import './App.css';
 import Navigation from './components/Navigation';
-import Volunteer from './components/Volunteer';
 
 // Protected Route component
 const ProtectedRoute = ({ children, user }) => {
@@ -84,8 +82,6 @@ function App() {
                 </ProtectedRoute>
               } 
             />
-            <Route path="/test" element={<Test />} />
-            <Route path="/volunteer" element={<Volunteer />} />
           </Routes>
         </main>
         <footer className="footer">
