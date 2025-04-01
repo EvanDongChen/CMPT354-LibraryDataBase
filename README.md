@@ -88,47 +88,49 @@ Member Id: 2
 Phone Number: 987-654-3210
 
 
-1.📚 **Find an item** in the library
--Use the search bar on the top right and enter a desired search result; results will appear at the center of the webpage.
--By default all library items are displayed at the center of the page
+1.📚 **Find an item** in the library <br>
+-Use the search bar on the top right and enter a desired search result; results will appear at the center of the webpage.<br>
+-By default all library items are displayed at the center of the page<br>
 <img width="406" alt="image" src="https://github.com/user-attachments/assets/f776a6e3-d059-4171-8208-2a9661cf49d4" />
+
 <img width="1121" alt="image" src="https://github.com/user-attachments/assets/1c5ef332-ccc0-4773-833c-c01182669193" />
 
 
-2.📖 **Borrow an item** from the library
--In the Library Items Catalog or Search Results, click the borrow button in each book box to borrow a book.
+2.📖 **Borrow an item** from the library<br>
+-In the Library Items Catalog or Search Results, click the borrow button in each book box to borrow a book.<br>
 <img width="642" alt="image" src="https://github.com/user-attachments/assets/3a269f05-6530-488a-b295-eb88ea8ce3da" />
 
-3.🔄 **Return a borrowed item**
--Click on the return tab in the nav-bar and click on the red return button to return a book.
--Books can also be returned using the Library Items Catalog
+3.🔄 **Return a borrowed item**<br>
+-Click on the return tab in the nav-bar and click on the red return button to return a book.<br>
+-Books can also be returned using the Library Items Catalog<br>
 <img width="686" alt="image" src="https://github.com/user-attachments/assets/514d4a0c-946f-4481-b80b-05078d9f0a93" />
 
-4.🎁 **Donate an item** to the library
--Click on the Donate tab in the nav-bar, fill in the form and submit a book. It will show up in the library items after refreshing the page.
+4.🎁 **Donate an item** to the library<br>
+-Click on the Donate tab in the nav-bar, fill in the form and submit a book. It will show up in the library items after refreshing the page.<br>
 
-5.📅 **Find an event** in the library
--Click on the Event tab in the nav-bar; all currently available events will be displayed.
+5.📅 **Find an event** in the library<br>
+-Click on the Event tab in the nav-bar; all currently available events will be displayed.<br>
 
-6.📝 **Register for an event**
--Click on the Event tab in the nav-bar. Click on the register button to register for an event.
--Registration is based upon the currently logged-in users.
--If a user is not a member, they can also register for an event using the login page.
+6.📝 **Register for an event**<br>
+-Click on the Event tab in the nav-bar. Click on the register button to register for an event.<br>
+-Registration is based upon the currently logged-in users.<br>
+-If a user is not a member, they can also register for an event using the login page.<br>
 
-Image: Member Event Reg
+Image: Member Event Reg<br>
 <img width="647" alt="image" src="https://github.com/user-attachments/assets/635d3db1-98d1-4d8f-9537-40a64c2dc167" />
 
-Image: Non-Member Event Reg
+Image: Non-Member Event Reg<br>
 ![image](https://github.com/user-attachments/assets/7a6e9584-079a-4f8d-81f7-31bfc925f474)
 
-7.🤝 **Volunteer** for the library
--Click on the Volunteer tab in the nav-bar. Select a desired role and click "register as a volunteer"
--Volunteer registration is based on the user currently logged in.
+7.🤝 **Volunteer** for the library<br>
+-Click on the Volunteer tab in the nav-bar. Select a desired role and click "register as a volunteer"<br>
+-Volunteer registration is based on the user currently logged in.<br>
 ![image](https://github.com/user-attachments/assets/94d4ef0d-8596-4ddb-b311-c5d91ea74a39)
 
-8.❓ **Ask for help** from a librarian
--Click on the Contact tab in the nav-bar. Fill in a the form to submit a question, all past asked questions are displayed below the form.
+8.❓ **Ask for help** from a librarian<br>
+-Click on the Contact tab in the nav-bar. Fill in a the form to submit a question, all past asked questions are displayed below the form.<br>
 ![image](https://github.com/user-attachments/assets/0fd365f4-4428-4688-b2cf-34faf36fbc7b)
+
 ![image](https://github.com/user-attachments/assets/1d149f59-672a-43e3-9ca8-d2c368c82a97)
 
 
