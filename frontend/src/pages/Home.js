@@ -488,6 +488,7 @@ function Home() {
                   onChange={handleDonateFormChange}
                   placeholder="Enter item title" 
                   required
+                  style={{ fontFamily: 'Times New Roman, Times, serif' }}
                 />
               </div>
               <div className="form-group">
@@ -499,6 +500,7 @@ function Home() {
                   onChange={handleDonateFormChange}
                   placeholder="Enter author name" 
                   required
+                  style={{ fontFamily: 'Times New Roman, Times, serif' }}
                 />
               </div>
               <div className="form-group">
@@ -510,6 +512,7 @@ function Home() {
                   onChange={handleDonateFormChange}
                   placeholder="Enter publication year" 
                   required
+                  style={{ fontFamily: 'Times New Roman, Times, serif' }}
                 />
               </div>
               <div className="form-group">
@@ -519,6 +522,7 @@ function Home() {
                   value={donateForm.type}
                   onChange={handleDonateFormChange}
                   required
+                  style={{ fontFamily: 'Times New Roman, Times, serif' }}
                 >
                   <option value="Book">Book</option>
                   <option value="Magazine">Magazine</option>
@@ -535,9 +539,20 @@ function Home() {
                   value={donateForm.url}
                   onChange={handleDonateFormChange}
                   placeholder="Enter digital item URL" 
+                  style={{ fontFamily: 'Times New Roman, Times, serif' }}
                 />
               </div>
-              <button type="submit" className="submit-button">Submit Donation</button>
+              <button 
+                type="submit" 
+                className="submit-button" 
+                style={{ 
+                  backgroundColor: '#006400', 
+                  color: 'white',
+                  fontFamily: 'Times New Roman, Times, serif'
+                }}
+              >
+                Submit Donation
+              </button>
             </form>
           </div>
         )}
@@ -693,6 +708,7 @@ function Home() {
                     value={volunteerForm.role}
                     onChange={handleVolunteerFormChange}
                     required
+                    style={{ fontFamily: 'Times New Roman, Times, serif' }}
                   >
                     <option value="">Select a role</option>
                     <option value="Book Shelver">Book Shelver</option>
@@ -701,7 +717,17 @@ function Home() {
                     <option value="Technology Tutor">Technology Tutor</option>
                   </select>
                 </div>
-                <button type="submit" className="submit-button">Register as Volunteer</button>
+                <button 
+                  type="submit" 
+                  className="submit-button" 
+                  style={{ 
+                    backgroundColor: '#006400', 
+                    color: 'white',
+                    fontFamily: 'Times New Roman, Times, serif'
+                  }}
+                >
+                  Register as Volunteer
+                </button>
               </form>
             ) : (
               <p>Please login to register as a volunteer.</p>
@@ -713,7 +739,7 @@ function Home() {
                 <ul className="volunteer-cards">
                   {volunteers.map(volunteer => (
                     <li key={volunteer.volunteer_id} className="volunteer-card">
-                      <h4>{volunteer.name}</h4>
+                      <h4 style={{ color: '#006400' }}>{volunteer.name}</h4>
                       <p><strong>Role:</strong> {volunteer.role}</p>
                       <p><strong>Contact:</strong> {volunteer.email}</p>
                     </li>
