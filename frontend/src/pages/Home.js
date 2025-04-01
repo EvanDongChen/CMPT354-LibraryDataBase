@@ -776,7 +776,7 @@ function Home() {
       </div>
 
       {/* Main Content */}
-      <div className="main-content">
+      <div className="main-content" style={{ marginBottom: '50px' }}>
         {borrowMessage.text && (
           <div className={`message ${borrowMessage.type}`}>
             {borrowMessage.text}
