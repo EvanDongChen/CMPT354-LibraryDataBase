@@ -613,22 +613,22 @@ function Home() {
           <div className="section contact-section">
             <h2>Contact Us</h2>
             <div className="contact-info">
-              <div className="contact-card">
-                <h3>📞 Phone</h3>
+              <div className="contact-card" style={{ fontFamily: 'Times New Roman, Times, serif' }}>
+                <h3 style={{ color: '#4f583d' }}>📞 Phone</h3>
                 <p>(555) 123-4567</p>
               </div>
-              <div className="contact-card">
-                <h3>📧 Email</h3>
+              <div className="contact-card" style={{ fontFamily: 'Times New Roman, Times, serif' }}>
+                <h3 style={{ color: '#4f583d' }}>📧 Email</h3>
                 <p>library@example.com</p>
               </div>
-              <div className="contact-card">
-                <h3>📍 Address</h3>
+              <div className="contact-card" style={{ fontFamily: 'Times New Roman, Times, serif' }}>
+                <h3 style={{ color: '#4f583d' }}>📍 Address</h3>
                 <p>123 Library Street<br />City, State 12345</p>
               </div>
             </div>
 
-            <div className="questions-section">
-              <h3>Ask a Question</h3>
+            <div className="questions-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+              <h3 style={{ color: '#4f583d', fontFamily: 'Times New Roman, Times, serif' }}>Ask a Question</h3>
               {questionMessage.text && (
                 <div className={`message ${questionMessage.type}`}>
                   {questionMessage.text}
@@ -637,12 +637,13 @@ function Home() {
               
               {user ? (
                 <>
-                  <form className="question-form" onSubmit={handleQuestionSubmit}>
+                  <form className="question-form" onSubmit={handleQuestionSubmit} style={{ width: '100%', maxWidth: '600px' }}>
                     <div className="form-group">
                       <label>Select Staff Member:</label>
                       <select 
                         value={selectedEmployee}
                         onChange={(e) => setSelectedEmployee(e.target.value)}
+                        style={{ fontFamily: 'Times New Roman, Times, serif' }}
                       >
                         <option value="">Select an employee</option>
                         {employees.map(emp => (
@@ -659,23 +660,34 @@ function Home() {
                         onChange={(e) => setNewQuestion(e.target.value)}
                         placeholder="Type your question here..."
                         required
+                        style={{ fontFamily: 'Times New Roman, Times, serif' }}
                       />
                     </div>
-                    <button type="submit" className="submit-button">Submit Question</button>
+                    <button 
+                      type="submit" 
+                      className="submit-button"
+                      style={{ 
+                        backgroundColor: '#4f583d',
+                        color: 'white',
+                        fontFamily: 'Times New Roman, Times, serif'
+                      }}
+                    >
+                      Submit Question
+                    </button>
                   </form>
 
-                  <div className="previous-questions">
-                    <h3>Your Previous Questions</h3>
+                  <div className="previous-questions" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                    <h3 style={{ color: '#4f583d', fontFamily: 'Times New Roman, Times, serif' }}>Your Previous Questions</h3>
                     {questions.length > 0 ? (
-                      <ul className="questions-list">
+                      <ul className="questions-list" style={{ width: '100%', maxWidth: '600px', margin: '0 auto', padding: '0' }}>
                         {questions.map(q => (
-                          <li key={q.request_id} className="question-item">
+                          <li key={q.request_id} className="question-item" style={{ fontFamily: 'Times New Roman, Times, serif' }}>
                             <div className="question">
-                              <strong>Q:</strong> {q.question}
+                              <strong style={{ color: '#4f583d' }}>Q:</strong> {q.question}
                             </div>
                             {q.answer && (
                               <div className="answer">
-                                <strong>A:</strong> {q.answer}
+                                <strong style={{ color: '#4f583d' }}>A:</strong> {q.answer}
                               </div>
                             )}
                             {!q.answer && (
