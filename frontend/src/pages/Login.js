@@ -197,8 +197,8 @@ function Login({ onLogin }) {
                 <form onSubmit={(e) => {
                   e.preventDefault();
                   handleEventRegistration(event.EventID);
-                }}>
-                  <div className="form-group">
+                }} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '15px' }}>
+                  <div className="form-group" style={{ margin: '0' }}>
                     <label>First Name:</label>
                     <input
                       type="text"
@@ -206,9 +206,10 @@ function Login({ onLogin }) {
                       value={registrationForms[event.EventID]?.first_name || ''}
                       onChange={(e) => handleRegistrationChange(event.EventID, e)}
                       required
+                      style={{ marginBottom: '0' }}
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="form-group" style={{ margin: '0' }}>
                     <label>Last Name:</label>
                     <input
                       type="text"
@@ -216,9 +217,10 @@ function Login({ onLogin }) {
                       value={registrationForms[event.EventID]?.last_name || ''}
                       onChange={(e) => handleRegistrationChange(event.EventID, e)}
                       required
+                      style={{ marginBottom: '0' }}
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="form-group" style={{ margin: '0' }}>
                     <label>Phone:</label>
                     <input
                       type="tel"
@@ -226,9 +228,10 @@ function Login({ onLogin }) {
                       value={registrationForms[event.EventID]?.phone || ''}
                       onChange={(e) => handleRegistrationChange(event.EventID, e)}
                       required
+                      style={{ marginBottom: '0' }}
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="form-group" style={{ margin: '0' }}>
                     <label>Email:</label>
                     <input
                       type="email"
@@ -236,9 +239,22 @@ function Login({ onLogin }) {
                       value={registrationForms[event.EventID]?.email || ''}
                       onChange={(e) => handleRegistrationChange(event.EventID, e)}
                       required
+                      style={{ marginBottom: '0' }}
                     />
                   </div>
-                  <button type="submit" className="register-button">Register for Event</button>
+                  <button 
+                    type="submit" 
+                    className="register-button"
+                    style={{ 
+                      gridColumn: '1 / -1',
+                      marginTop: '10px',
+                      backgroundColor: '#4f583d',
+                      color: 'white',
+                      fontFamily: 'Times New Roman, Times, serif'
+                    }}
+                  >
+                    Register for Event
+                  </button>
                 </form>
               </div>
             ))}
