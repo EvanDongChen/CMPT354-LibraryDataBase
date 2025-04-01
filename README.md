@@ -74,12 +74,19 @@ This project was created for **CMPT 354 - Spring 2025** under the guidance of **
 ## Feature Guide
 Our Library DB features a User system; by default, you will be logged in as Alice Smith. You can Logout out using the logout button at the top right, 
 which will return you to the login screen. Here at the top right, you can sign up for a new account or use one of our existing accounts.
+
 Alice's Account:
+
 Member ID: 1
+
 Phone Number: 123-456-7890
+
 Bob's Account:
+
 Member Id: 2
+
 Phone Number: 987-654-3210
+
 
 1.📚 **Find an item** in the library
 -Use the search bar on the top right and enter a desired search result; results will appear at the center of the webpage.
