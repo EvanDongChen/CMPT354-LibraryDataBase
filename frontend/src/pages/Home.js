@@ -351,10 +351,10 @@ function Home() {
         // Reset the form
         setVolunteerForm({ role: 'Book Shelver' });
         
-        // Clear success message after 5 seconds
+        // Reload the page after 2 seconds
         setTimeout(() => {
-          setVolunteerMessage({ type: '', text: '' });
-        }, 5000);
+          window.location.reload();
+        }, 2000);
       }
     } catch (error) {
       setVolunteerMessage({
