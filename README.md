@@ -1,6 +1,6 @@
 # Evan and Emmy's Library Database - Library DB
 
-This project was created for **CMPT 354 - Spring 2025** under the guidance of **Dr. Eugenia Ternovska**, Associate Professor at SFU.
+This project was created for **CMPT 354 - Spring 2025** Taught By **Dr. Eugenia Ternovska**, Associate Professor at SFU.
 
 ## Table of Contents
 - [Setup Instructions](#setup-instructions)
@@ -25,6 +25,11 @@ This project was created for **CMPT 354 - Spring 2025** under the guidance of **
    ```sh
    cd CMPT354-LibraryDataBase/backend
    ```
+   or if you already have the project open in the terminal<br>
+   
+    ```sh
+   cd backend
+   ```
 2. Create and activate a virtual environment:
    ```sh
    python -m venv venv
@@ -37,10 +42,11 @@ This project was created for **CMPT 354 - Spring 2025** under the guidance of **
    ```sh
    source venv/bin/activate
    ```
-3. If activation fails on Windows, try running:
+3. If activation fails on Windows, try running,
    ```sh
    Set-ExecutionPolicy Unrestricted -Scope Process
    ```
+   after which try activating the virtual environment again
 4. Install dependencies:
    ```sh
    pip install -r requirements.txt
@@ -59,11 +65,15 @@ This project was created for **CMPT 354 - Spring 2025** under the guidance of **
    ```sh
    cd CMPT354-LibraryDataBase/frontend
    ```
+   or if you already have the project open in the terminal<br>
+    ```sh
+   cd backend
+   ```
 2. Install dependencies:
    ```sh
    npm install
    ```
-3. Start the frontend server:
+3. Start the frontend server: (you might need to open a new terminal for the frontend folder for this step)
    ```sh
    npm start
    ```
@@ -72,8 +82,10 @@ This project was created for **CMPT 354 - Spring 2025** under the guidance of **
 ---
 
 ## Feature Guide
-Our Library DB features a User system; by default, you will be logged in as Alice Smith. You can Logout out using the logout button at the top right, 
-which will return you to the login screen. Here at the top right, you can sign up for a new account or use one of our existing accounts.
+Our Library DB features a User system; You can log out using the logout button at the top right, which will return you to the login screen. <br>
+At the top right of the login screen, you can sign up for a new account or use one of our existing accounts. <br>
+
+Existing Accounts: 
 
 Alice's Account:
 
