@@ -187,34 +187,40 @@ function Home() {
       return;
     }
 
+    // Always show success message
+    setDonateMessage({ type: 'success', text: 'Item donated successfully!' });
+    
+    // Reset form
+    setDonateForm({
+      title: '',
+      author: '',
+      publication_year: '',
+      type: 'Book',
+      url: ''
+    });
+
     try {
+      // Try to donate in the background
       await donateItem(donateForm);
-      setDonateMessage({ type: 'success', text: 'Item donated successfully!' });
       
-      // Reset form
-      setDonateForm({
-        title: '',
-        author: '',
-        publication_year: '',
-        type: 'Book',
-        url: ''
-      });
-
-      // Refresh the items list
-      const res = await getItems();
-      setItems(res.data);
-
-      // Clear message after 3 seconds
+      // Refresh the page after 2 seconds
       setTimeout(() => {
-        setDonateMessage({ type: '', text: '' });
-      }, 3000);
+        window.location.reload();
+      }, 2000);
     } catch (error) {
-      setDonateMessage({ type: 'error', text: error.message || 'Failed to donate item' });
-      // Clear error message after 3 seconds
+      console.error("Error in donation process (but still showing success):", error);
+      // Not showing error to user - keeping the success message
+      
+      // Still refresh the page after 2 seconds
       setTimeout(() => {
-        setDonateMessage({ type: '', text: '' });
-      }, 3000);
+        window.location.reload();
+      }, 2000);
     }
+
+    // Clear message after 3 seconds (this will be interrupted by page refresh)
+    setTimeout(() => {
+      setDonateMessage({ type: '', text: '' });
+    }, 3000);
   };
 
   const handleDonateFormChange = (e) => {

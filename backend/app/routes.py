@@ -328,6 +328,7 @@ def return_item_route():
         return response
 
 @api_bp.route('/api/items/donate', methods=['POST', 'OPTIONS'])
+@cross_origin(supports_credentials=True)
 def donate_item():
     if request.method == 'OPTIONS':
         response = make_response()
@@ -351,33 +352,24 @@ def donate_item():
         if data['type'] not in valid_item_types:
             return jsonify({'error': f'Invalid item type. Must be one of: {", ".join(valid_item_types)}'}), 400
         
-        # Create the base item
-        new_item = Item(
-            Title=data['title'],
-            Author=data['author'],
-            PublicationYear=data['publication_year'],
-            Type=data['type'],
-            Status='Available'  # New items start as Available
+        # Use the model's donate_item method
+        new_item = Item.donate_item(
+            title=data['title'],
+            author=data['author'],
+            publication_year=data['publication_year'],
+            item_type=data['type'],
+            url=data.get('url')  # Optional URL for digital items
         )
         
-        db.session.add(new_item)
-        db.session.flush()  # Get the ItemID
-        
-        # Create the specific item type (Physical or Digital)
-        if data.get('url'):  # If URL is provided, it's a digital item
-            digital_item = DigitalItem(
-                ItemID=new_item.ItemID,
-                URL=data['url']
-            )
-            db.session.add(digital_item)
-        else:  # If no URL, it's a physical item
-            physical_item = PhysicalItem(
-                ItemID=new_item.ItemID,
-                ShelfNumber="TBD"  # Temporary value until staff assigns it
-            )
-            db.session.add(physical_item)
-        
-        db.session.commit()
+        # Create success response with CORS headers
+        response = jsonify({
+            'message': 'Item donated successfully',
+            'item_id': new_item.ItemID,
+            'success': True
+        })
+        response.headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        return response
         
     except Exception as e:
         db.session.rollback()

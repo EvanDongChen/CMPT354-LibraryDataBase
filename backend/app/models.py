@@ -91,6 +91,50 @@ class Item(db.Model):
     physical_item = db.relationship('PhysicalItem', back_populates='item', uselist=False)
     transactions = db.relationship('BorrowingTransaction', back_populates='item')
 
+    @classmethod
+    def donate_item(cls, title, author, publication_year, item_type, url=None):
+        """
+        Donate a new item to the library.
+        
+        Args:
+            title (str): Title of the item
+            author (str): Author of the item
+            publication_year (int): Year of publication
+            item_type (str): Type of item (Book, Magazine, Scientific Journal, CD, Record)
+            url (str, optional): URL for digital items
+            
+        Returns:
+            Item: The newly created item
+        """
+        # Create the base item
+        new_item = cls(
+            Title=title,
+            Author=author,
+            PublicationYear=publication_year,
+            Type=item_type,
+            Status='Available'  # New items start as Available
+        )
+        
+        db.session.add(new_item)
+        db.session.flush()  # Get the ItemID
+        
+        # Create the specific item type (Physical or Digital)
+        if url:  # If URL is provided, it's a digital item
+            digital_item = DigitalItem(
+                ItemID=new_item.ItemID,
+                URL=url
+            )
+            db.session.add(digital_item)
+        else:  # If no URL, it's a physical item
+            physical_item = PhysicalItem(
+                ItemID=new_item.ItemID,
+                ShelfNumber="TBD"  # Temporary value until staff assigns it
+            )
+            db.session.add(physical_item)
+        
+        db.session.commit()
+        return new_item
+
 class DigitalItem(db.Model):
     __tablename__ = 'DigitalItem'
     
