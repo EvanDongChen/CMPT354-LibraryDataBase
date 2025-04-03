@@ -67,7 +67,7 @@ This project was created for **CMPT 354 - Spring 2025** Taught By **Dr. Eugenia 
    ```
    or if you already have the project open in the terminal<br>
     ```sh
-   cd backend
+   cd frontend
    ```
 2. Install dependencies:
    ```sh
