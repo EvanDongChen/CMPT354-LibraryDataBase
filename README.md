@@ -21,6 +21,9 @@ This project was created for **CMPT 354 - Spring 2025** Taught By **Dr. Eugenia 
    ```
 
 ### Step 2: Backend Server
+
+Tables for our project are in backend/app/models.py
+
 1. Navigate to the backend folder:
    ```sh
    cd CMPT354-LibraryDataBase/backend
