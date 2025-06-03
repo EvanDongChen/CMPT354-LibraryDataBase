@@ -24,7 +24,7 @@ def create_app():
                      "http://localhost:5000",
                      "http://127.0.0.1:3000",
                      "http://127.0.0.1:5000",
-                    "https://your-frontend.onrender.com"
+                    "https://librarydatabaseproject.onrender.com"
 
                  ],
                  "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
