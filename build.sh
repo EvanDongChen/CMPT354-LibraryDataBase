@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# This is a dummy change to force git to track permissions
+# Always run from repo root
+cd "$(dirname "$0")"
 
 cd frontend
 npm install
