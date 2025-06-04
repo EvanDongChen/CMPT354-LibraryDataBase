@@ -1,7 +1,9 @@
 # Evan and Emmy's Library Database - Library DB
 
 This project was created for **CMPT 354 - Spring 2025** at SFU.
-[🔗 View the deployed site](https://librarydatabaseproject.onrender.com)
+
+ **LINK** [🔗 View the deployed site](https://librarydatabaseproject.onrender.com)
+
  **NOTE** Due to Render's free tier , the website may take a bit to start up, please give it ~2-4 minutes
 
 ## Table of Contents
